@@ -1,1 +1,1 @@
-reports/_version.py export-subst
+bids/reports/_version.py export-subst

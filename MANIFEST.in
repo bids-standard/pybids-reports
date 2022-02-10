@@ -1,4 +1,4 @@
 include versioneer.py
-include reports/_version.py
-recursive-include reports/config *.json
-recursive-include reports/tests/data *
+include bids/reports/_version.py
+recursive-include bids/reports/config *.json
+recursive-include bids/reports/tests/data *
