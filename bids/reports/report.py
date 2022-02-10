@@ -3,7 +3,7 @@ import json
 import os.path as op
 from collections import Counter
 
-from reports import parsing, utils
+from bids.reports import parsing, utils
 
 
 class BIDSReport(object):

@@ -5,8 +5,8 @@ import warnings
 import nibabel as nib
 from num2words import num2words
 
-from reports import __version__, parameters
-from reports.utils import collect_associated_files
+from bids.reports import parameters
+from bids.reports.utils import collect_associated_files
 
 logging.basicConfig()
 LOGGER = logging.getLogger("reports.parsing")
@@ -317,6 +317,9 @@ def final_paragraph(metadata):
     desc : :obj:`str`
         Output string with scanner information.
     """
+    # Imported here to avoid a circular import
+    from bids.reports import __version__
+
     if "ConversionSoftware" in metadata.keys():
         soft = metadata["ConversionSoftware"]
         vers = metadata["ConversionSoftwareVersion"]
@@ -325,7 +328,7 @@ def final_paragraph(metadata):
         software_str = ""
     desc = (
         "Dicoms were converted to NIfTI-1 format{software_str}. "
-        "This section was (in part) generated automatically using pybids "
+        "This section was (in part) generated automatically using pybids-reports "
         "({meth_vers}).".format(
             software_str=software_str,
             meth_vers=__version__,
