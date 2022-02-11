@@ -1,71 +1,7 @@
+"""Tests for bids.reports.parameters module."""
 import pytest
-import json
-import nibabel as nib
 
-from os.path import abspath, join
-
-from bids.layout import BIDSLayout
 from bids.reports import parameters
-from bids.tests import get_test_data_path
-
-
-@pytest.fixture
-def testlayout():
-    """A BIDSLayout for testing."""
-    data_dir = join(get_test_data_path(), "synthetic")
-    return BIDSLayout(data_dir)
-
-
-@pytest.fixture
-def testimg(testlayout):
-
-    func_files = testlayout.get(
-        subject="01",
-        session="01",
-        task="nback",
-        run="01",
-        extension=[".nii.gz"],
-    )
-    return nib.load(func_files[0].path)
-
-
-@pytest.fixture
-def testdiffimg(testlayout):
-
-    dwi_files = testlayout.get(
-        subject="01",
-        session="01",
-        datatype="dwi",
-        extension=[".nii.gz"],
-    )
-    return nib.load(dwi_files[0].path)
-
-
-@pytest.fixture
-def testconfig():
-    config_file = abspath(
-        join(get_test_data_path(), "../../reports/config/converters.json")
-    )
-    with open(config_file, "r") as fobj:
-        config = json.load(fobj)
-    return config
-
-
-@pytest.fixture
-def testmeta():
-    return {
-        "RepetitionTime": 2.0,
-        "MultibandAccelerationFactor": 2,
-        "ParallelReductionFactorInPlane": 2,
-        "FlipAngle": 90,
-        "PhaseEncodingDirection": "i",
-        "SliceTiming": [0, 1, 2, 3],
-    }
-
-
-@pytest.fixture
-def testmeta_light():
-    return {"RepetitionTime": 2.0}
 
 
 @pytest.mark.parametrize(
