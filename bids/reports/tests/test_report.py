@@ -3,17 +3,9 @@ import json
 from collections import Counter
 from os.path import abspath, join
 
-import pytest
-from bids.layout import BIDSLayout
-from bids.reports import BIDSReport
 from bids.tests import get_test_data_path
 
-
-@pytest.fixture
-def testlayout():
-    """A BIDSLayout for testing."""
-    data_dir = join(get_test_data_path(), "synthetic")
-    return BIDSLayout(data_dir)
+from bids.reports import BIDSReport
 
 
 def test_report_init(testlayout):
