@@ -55,7 +55,7 @@ jobs:
         run: pip install -e .[tests]
       - name: 'Run tests'
         shell: bash {0}
-        run: python -m pytest --pyargs bids/reports --cov=pybids-reports
+        run: python -m pytest --pyargs bids/reports --cov=bids/reports
       - name: 'Upload coverage to CodeCov'
         uses: codecov/codecov-action@v1
         if: success()
