@@ -9,7 +9,7 @@ from bids.reports import parameters
 from bids.reports.utils import collect_associated_files
 
 logging.basicConfig()
-LOGGER = logging.getLogger("reports.parsing")
+LOGGER = logging.getLogger("pybids-reports.parsing")
 
 
 def func_info(layout, files, config):

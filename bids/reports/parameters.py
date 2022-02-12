@@ -10,7 +10,7 @@ from num2words import num2words
 from bids.reports.utils import list_to_str, num_to_str, remove_duplicates
 
 logging.basicConfig()
-LOGGER = logging.getLogger("reports.parsing")
+LOGGER = logging.getLogger("pybids-reports.parameters")
 
 
 def describe_slice_timing(img, metadata: dict) -> str:

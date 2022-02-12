@@ -1,9 +1,13 @@
 """Generate publication-quality data acquisition methods section from BIDS dataset."""
 import json
+import logging
 import os.path as op
 from collections import Counter
 
 from bids.reports import parsing, utils
+
+logging.basicConfig()
+LOGGER = logging.getLogger("pybids-reports.report")
 
 
 class BIDSReport(object):
