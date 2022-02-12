@@ -266,14 +266,11 @@ def fmap_info(layout, files, config):
 
     for_str = parameters.describe_intendedfor_targets(metadata, layout)
 
-    desc = (
-        "A {variants} {seqs} field map ({parameters_str}) was "
-        "acquired{for_str}.".format(
-            variants=variants,
-            seqs=seqs,
-            for_str=for_str,
-            parameters_str=parameters_str,
-        )
+    desc = "A {variants} {seqs} field map ({parameters_str}) was acquired{for_str}.".format(
+        variants=variants,
+        seqs=seqs,
+        for_str=for_str,
+        parameters_str=parameters_str,
     )
     return desc
 
@@ -293,13 +290,10 @@ def general_acquisition_info(metadata):
     out_str : :obj:`str`
         Output string with scanner information.
     """
-    out_str = (
-        "MR data were acquired using a {tesla}-Tesla {manu} {model} MRI "
-        "scanner.".format(
-            tesla=metadata.get("MagneticFieldStrength", "UNKNOWN"),
-            manu=metadata.get("Manufacturer", "MANUFACTURER"),
-            model=metadata.get("ManufacturersModelName", "MODEL"),
-        )
+    out_str = "MR data were acquired using a {tesla}-Tesla {manu} {model} MRI scanner.".format(
+        tesla=metadata.get("MagneticFieldStrength", "UNKNOWN"),
+        manu=metadata.get("Manufacturer", "MANUFACTURER"),
+        model=metadata.get("ManufacturersModelName", "MODEL"),
     )
     return out_str
 
@@ -367,9 +361,9 @@ def parse_files(layout, data_files, sub, config):
         if group[0].entities["datatype"] == "func":
             group_description = func_info(layout, group, config)
 
-        elif (group[0].entities["datatype"] == "anat") and group[0].entities[
-            "suffix"
-        ].endswith("w"):
+        elif (group[0].entities["datatype"] == "anat") and group[0].entities["suffix"].endswith(
+            "w"
+        ):
             group_description = anat_info(layout, group, config)
 
         elif group[0].entities["datatype"] == "dwi":

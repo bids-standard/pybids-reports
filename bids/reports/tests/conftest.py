@@ -44,9 +44,7 @@ def testdiffimg(testlayout):
 @pytest.fixture
 def testconfig():
     """The standard config file for testing."""
-    config_file = abspath(
-        join(get_test_data_path(), "../../reports/config/converters.json")
-    )
+    config_file = abspath(join(get_test_data_path(), "../../reports/config/converters.json"))
     with open(config_file, "r") as fobj:
         config = json.load(fobj)
     return config

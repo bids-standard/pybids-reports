@@ -55,8 +55,7 @@ class BIDSReport(object):
 
         if not isinstance(config, dict):
             raise ValueError(
-                "Input config must be None, dict, or path to "
-                "json file containing dict."
+                "Input config must be None, dict, or path to json file containing dict."
             )
 
         self.config = config
@@ -103,9 +102,7 @@ class BIDSReport(object):
             subject_files = [f for f in files if f.get_entities().get("subject") == sub]
             description_list = []
             for ses in sessions:
-                data_files = [
-                    f for f in subject_files if f.get_entities().get("session") == ses
-                ]
+                data_files = [f for f in subject_files if f.get_entities().get("session") == ses]
 
                 if data_files:
                     ses_description = parsing.parse_files(
@@ -114,9 +111,7 @@ class BIDSReport(object):
                         sub,
                         self.config,
                     )
-                    ses_description[0] = (
-                        "In session {0}, ".format(ses) + ses_description[0]
-                    )
+                    ses_description[0] = "In session {0}, ".format(ses) + ses_description[0]
                     description_list += ses_description
                     metadata = self.layout.get_metadata(data_files[0].path)
                 else:
@@ -125,9 +120,7 @@ class BIDSReport(object):
             # Assume all data were converted the same way and use the last nifti
             # file's json for conversion information.
             if "metadata" not in vars():
-                raise Exception(
-                    "No valid jsons found. Cannot generate final paragraph."
-                )
+                raise Exception("No valid jsons found. Cannot generate final paragraph.")
 
             description = "\n\t".join(description_list)
             description += "\n\n{0}".format(parsing.final_paragraph(metadata))
@@ -205,9 +198,7 @@ class BIDSReport(object):
         """
         description_list = []
         # Remove session from kwargs if provided, else set session as all available
-        sessions = kwargs.pop(
-            "session", self.layout.get_sessions(subject=subject, **kwargs)
-        )
+        sessions = kwargs.pop("session", self.layout.get_sessions(subject=subject, **kwargs))
         if not sessions:
             sessions = [None]
         elif not isinstance(sessions, list):

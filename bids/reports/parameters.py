@@ -15,7 +15,6 @@ LOGGER = logging.getLogger("pybids-reports.parameters")
 
 def describe_slice_timing(img, metadata: dict) -> str:
     """Generate description of slice timing from metadata."""
-
     if "SliceTiming" in metadata:
         slice_order = " in {0} order".format(get_slice_info(metadata["SliceTiming"]))
         n_slices = len(metadata["SliceTiming"])
@@ -23,9 +22,7 @@ def describe_slice_timing(img, metadata: dict) -> str:
         slice_order = ""
         n_slices = img.shape[2]
 
-    return "{n_slices} slices{slice_order}".format(
-        n_slices=n_slices, slice_order=slice_order
-    )
+    return "{n_slices} slices{slice_order}".format(n_slices=n_slices, slice_order=slice_order)
 
 
 def describe_repetition_time(metadata: dict):
@@ -63,9 +60,9 @@ def describe_duration(files) -> str:
         n_vols = n_vols[0]
         dur_str = describe_func_duration(n_vols, tr)
 
-    dur_str = (
-        "Run duration was {0} minutes, during which {1} volumes were acquired."
-    ).format(dur_str, n_vols)
+    dur_str = ("Run duration was {0} minutes, during which {1} volumes were acquired.").format(
+        dur_str, n_vols
+    )
     return dur_str
 
 
@@ -93,7 +90,6 @@ def describe_echo_times(files):
     me_str : str
         Whether the data are multi-echo or single-echo.
     """
-
     echo_times = [f.get_metadata()["EchoTime"] for f in files]
     echo_times = sorted(list(set(echo_times)))
     if len(echo_times) > 1:
@@ -108,7 +104,7 @@ def describe_echo_times(files):
 
 
 def describe_echo_times_fmap(files):
-    """Generate description of echo times from metadata field for fmaps
+    """Generate description of echo times from metadata field for fmaps.
 
     Parameters
     ----------
@@ -160,9 +156,7 @@ def describe_image_size(img):
 def describe_inplane_accel(metadata: dict) -> str:
     """Generate description of in-plane acceleration factor, if any."""
     return (
-        "in-plane acceleration factor={}".format(
-            metadata["ParallelReductionFactorInPlane"]
-        )
+        "in-plane acceleration factor={}".format(metadata["ParallelReductionFactorInPlane"])
         if metadata.get("ParallelReductionFactorInPlane", 1) > 1
         else ""
     )
@@ -184,9 +178,7 @@ def describe_bvals(bval_file) -> str:
     with open(bval_file, "r") as file_object:
         raw_bvals = file_object.read().splitlines()
     # Flatten list of space-separated values
-    bvals = [
-        item for sublist in [line.split(" ") for line in raw_bvals] for item in sublist
-    ]
+    bvals = [item for sublist in [line.split(" ") for line in raw_bvals] for item in sublist]
     bvals = sorted([int(v) for v in set(bvals)])
     bvals = [num_to_str(v) for v in bvals]
     bval_str = list_to_str(bvals)
@@ -210,9 +202,7 @@ def describe_intendedfor_targets(metadata: dict, layout) -> str:
 
         for scan in scans:
             fn = op.basename(scan)
-            if_file = [
-                f for f in layout.get(extension=[".nii", ".nii.gz"]) if fn in f.path
-            ][0]
+            if_file = [f for f in layout.get(extension=[".nii", ".nii.gz"]) if fn in f.path][0]
             run_num = int(if_file.run)
             target_type = if_file.entities["suffix"].upper()
 
@@ -229,9 +219,7 @@ def describe_intendedfor_targets(metadata: dict, layout) -> str:
             run_dict[target_type_str].append(run_num)
 
         for scan in run_dict.keys():
-            run_dict[scan] = [
-                num2words(r, ordinal=True) for r in sorted(run_dict[scan])
-            ]
+            run_dict[scan] = [num2words(r, ordinal=True) for r in sorted(run_dict[scan])]
 
         out_list = []
 
@@ -320,8 +308,7 @@ def describe_sequence(metadata: dict, config: dict):
         seqs += " ({0})".format(os.path.sep.join(seq_abbrs))
 
     variants = [
-        config["seqvar"].get(var, var)
-        for var in metadata.get("SequenceVariant", "").split("_")
+        config["seqvar"].get(var, var) for var in metadata.get("SequenceVariant", "").split("_")
     ]
     variants = list_to_str(variants)
 
