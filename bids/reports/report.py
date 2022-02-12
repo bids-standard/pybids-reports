@@ -4,7 +4,7 @@ import logging
 import os.path as op
 from collections import Counter
 
-from bids.reports import parsing, utils
+from . import parsing, utils
 
 logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.report")

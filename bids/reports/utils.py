@@ -6,7 +6,7 @@ methods section from a BIDS dataset.
 import logging
 
 logging.basicConfig()
-LOGGER = logging.getLogger("reports.utils")
+LOGGER = logging.getLogger("pybids-reports.utils")
 
 
 def collect_associated_files(layout, files, extra_entities=()):

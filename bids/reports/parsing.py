@@ -5,8 +5,8 @@ import warnings
 import nibabel as nib
 from num2words import num2words
 
-from bids.reports import parameters
-from bids.reports.utils import collect_associated_files
+from . import parameters
+from .utils import collect_associated_files
 
 logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.parsing")
@@ -312,7 +312,7 @@ def final_paragraph(metadata):
         Output string with scanner information.
     """
     # Imported here to avoid a circular import
-    from bids.reports import __version__
+    from . import __version__
 
     if "ConversionSoftware" in metadata.keys():
         soft = metadata["ConversionSoftware"]
