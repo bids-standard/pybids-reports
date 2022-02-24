@@ -1,5 +1,5 @@
 """Tests for bids.reports.parsing."""
-from bids.reports import parsing
+from bids.ext.reports import parsing
 
 
 def test_anat_info_smoke(testlayout, testconfig):

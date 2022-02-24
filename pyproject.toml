@@ -18,8 +18,8 @@ exclude = '''
     | dist
   )/
   | versioneer.py
-  | bids/reports/_version.py
-  | bids/reports/due.py
+  | bids/ext/reports/_version.py
+  | bids/ext/reports/due.py
 )
 '''
 
