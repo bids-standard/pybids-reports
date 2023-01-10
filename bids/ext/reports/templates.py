@@ -1,5 +1,6 @@
-from ext.reports import __version__
 from num2words import num2words
+
+from . import __version__
 
 
 def nb_runs_str(nb_runs: int):

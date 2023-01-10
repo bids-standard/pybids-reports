@@ -55,7 +55,7 @@ class BIDSReport(object):
 
         if not isinstance(config, dict):
             raise ValueError(
-                "Input config must be None, dict, or path to " "json file containing dict."
+                "Input config must be None, dict, or path to json file containing dict."
             )
 
         self.config = config
