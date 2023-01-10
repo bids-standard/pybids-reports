@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 """Functions for building strings for individual parameters."""
 import logging
 import math
