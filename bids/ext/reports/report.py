@@ -108,7 +108,6 @@ class BIDSReport(object):
                     ses_description = parsing.parse_files(
                         self.layout,
                         data_files,
-                        sub,
                         self.config,
                     )
                     ses_description[0] = "In session {0}, ".format(ses) + ses_description[0]
@@ -215,7 +214,6 @@ class BIDSReport(object):
                 ses_description = parsing.parse_files(
                     self.layout,
                     data_files,
-                    subject,
                     self.config,
                 )
                 ses_description[0] = "In session {0}, ".format(ses) + ses_description[0]
