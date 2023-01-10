@@ -1,7 +1,7 @@
 """Tests for bids.reports.parameters module."""
 import pytest
 
-from bids.ext.reports import parameters
+from ext.reports import parameters
 
 
 @pytest.mark.parametrize(

@@ -5,7 +5,7 @@ from os.path import abspath, join
 
 from bids.tests import get_test_data_path
 
-from bids.ext.reports import BIDSReport
+from ext.reports import BIDSReport
 
 
 def test_report_init(testlayout):
