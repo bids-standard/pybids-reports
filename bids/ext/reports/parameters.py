@@ -277,7 +277,7 @@ def variants(metadata: dict, config: dict):
     return variants
 
 
-def sequence(metadata: dict, config: dict):
+def sequence(metadata: dict, config: dict) -> str:
     """Extract and reformat imaging sequence(s) and variant(s) into pretty strings.
 
     Parameters

@@ -1,9 +1,12 @@
+from __future__ import annotations
+
 """Generate publication-quality data acquisition methods section from BIDS dataset.
 
 Utilities to generate the MRI data acquisition portion of a
 methods section from a BIDS dataset.
 """
 import logging
+from typing import Any, List, Set
 
 logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.utils")
@@ -50,22 +53,22 @@ def collect_associated_files(layout, files, extra_entities=()):
     return collected_files
 
 
-def reminder():
+def reminder() -> str:
     """Remind users about things they need to do after generating the report."""
     return "Remember to double-check everything and to replace <deg> with a degree symbol."
 
 
-def remove_duplicates(seq):
+def remove_duplicates(seq: List[Any]) -> List[Any]:
     """Return unique elements from list while preserving order.
 
     From https://stackoverflow.com/a/480227/2589328
     """
-    seen = set()
+    seen: Set[Any] = set()
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x))]
 
 
-def num_to_str(num):
+def num_to_str(num: int | float) -> str:
     """Convert an int or float to a nice string.
 
     E.g.,
@@ -76,7 +79,7 @@ def num_to_str(num):
     return "{0:0.02f}".format(num).rstrip("0").rstrip(".")
 
 
-def list_to_str(lst):
+def list_to_str(lst: List[str]) -> str:
     """Turn a list into a comma- and/or and-separated string.
 
     Parameters

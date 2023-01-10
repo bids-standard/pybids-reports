@@ -1,7 +1,5 @@
 from num2words import num2words
 
-# from . import __version__
-
 
 def nb_runs_str(nb_runs: int):
     if nb_runs == 1:
@@ -16,6 +14,9 @@ def general_acquisition_info(desc_data):
 
 
 def footer():
+    # Imported here to avoid a circular import
+    from . import __version__
+
     return f"This section was (in part) generated automatically using pybids {__version__}."
 
 
