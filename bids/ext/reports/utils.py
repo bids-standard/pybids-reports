@@ -6,7 +6,7 @@ methods section from a BIDS dataset.
 import logging
 
 logging.basicConfig()
-LOGGER = logging.getLogger("reports.utils")
+LOGGER = logging.getLogger("pybids-reports.utils")
 
 
 def collect_associated_files(layout, files, extra_entities=()):
@@ -32,9 +32,7 @@ def collect_associated_files(layout, files, extra_entities=()):
 
     collected_files = []
     for f in files:
-        if len(collected_files) and any(
-            f in filegroup for filegroup in collected_files
-        ):
+        if len(collected_files) and any(f in filegroup for filegroup in collected_files):
             continue
         ents = f.get_entities()
         ents = {k: v for k, v in ents.items() if k not in MULTICONTRAST_ENTITIES}
@@ -54,10 +52,7 @@ def collect_associated_files(layout, files, extra_entities=()):
 
 def reminder():
     """Remind users about things they need to do after generating the report."""
-    return (
-        "Remember to double-check everything and to replace <deg> with "
-        "a degree symbol."
-    )
+    return "Remember to double-check everything and to replace <deg> with a degree symbol."
 
 
 def remove_duplicates(seq):
