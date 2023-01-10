@@ -4,7 +4,6 @@ from collections import Counter
 from os.path import abspath, join
 
 from bids.tests import get_test_data_path
-
 from ext.reports import BIDSReport
 
 
@@ -22,7 +21,9 @@ def test_report_gen(testlayout):
 
 
 def test_report_gen_from_files(testlayout):
-    """Test that a report from a file list returns a Counter of unique descs in the dataset."""
+    """Report generation from file list should return a counter of unique
+    descriptions in the dataset.
+    """
     report = BIDSReport(testlayout)
     files = testlayout.get(extension=[".nii.gz", ".nii"])
     descriptions = report.generate_from_files(files)
@@ -30,9 +31,8 @@ def test_report_gen_from_files(testlayout):
 
 
 def test_report_subject(testlayout):
-    """Test that a report for one subject return one subject's description.
-
-    This should be one pattern with a counter of one in the Counter.
+    """Generating a report for one subject should only return one subject's
+    description (i.e., one pattern with a count of one).
     """
     report = BIDSReport(testlayout)
     descriptions = report.generate(subject="01")
@@ -40,7 +40,9 @@ def test_report_subject(testlayout):
 
 
 def test_report_session(testlayout):
-    """Test that a report for one session doesn't show other sessions in any descriptions."""
+    """Generating a report for one session should mean that no other sessions
+    appear in any of the unique descriptions.
+    """
     report = BIDSReport(testlayout)
     descriptions = report.generate(session="01")
     assert "session 02" not in " ".join(descriptions.keys())

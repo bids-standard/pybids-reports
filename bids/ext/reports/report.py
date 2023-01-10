@@ -55,7 +55,7 @@ class BIDSReport(object):
 
         if not isinstance(config, dict):
             raise ValueError(
-                "Input config must be None, dict, or path to json file containing dict."
+                "Input config must be None, dict, or path to " "json file containing dict."
             )
 
         self.config = config
@@ -108,7 +108,6 @@ class BIDSReport(object):
                     ses_description = parsing.parse_files(
                         self.layout,
                         data_files,
-                        sub,
                         self.config,
                     )
                     ses_description[0] = "In session {0}, ".format(ses) + ses_description[0]
@@ -215,7 +214,6 @@ class BIDSReport(object):
                 ses_description = parsing.parse_files(
                     self.layout,
                     data_files,
-                    subject,
                     self.config,
                 )
                 ses_description[0] = "In session {0}, ".format(ses) + ses_description[0]
