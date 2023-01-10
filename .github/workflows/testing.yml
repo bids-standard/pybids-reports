@@ -19,7 +19,7 @@ jobs:
     outputs:
       skip: ${{ steps.result_step.outputs.ci-skip }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - id: result_step
@@ -42,7 +42,7 @@ jobs:
       run:
         shell: bash
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: 'Set up python'
         uses: actions/setup-python@v4
         with:
