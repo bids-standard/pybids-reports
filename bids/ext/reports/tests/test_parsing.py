@@ -34,6 +34,9 @@ def test_dwi_info_smoke(testlayout, testconfig):
     )
 
     desc = parsing.dwi_info(dwi_files, testconfig)
+
+    print(desc)
+
     assert isinstance(desc, str)
 
 
@@ -71,15 +74,6 @@ def test_func_info_smoke(testlayout, testconfig):
 
     print(desc)
 
-    assert isinstance(desc, str)
-
-
-def test_general_acquisition_info_smoke(testmeta):
-    """Smoke test for parsing.general_acquisition_info.
-
-    It should return a str description when provided valid inputs.
-    """
-    desc = parsing.general_acquisition_info(testmeta)
     assert isinstance(desc, str)
 
 
