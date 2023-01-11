@@ -15,6 +15,9 @@ def test_anat_info_smoke(testlayout, testconfig):
     )
 
     desc = parsing.anat_info(anat_files, testconfig)
+
+    print(desc)
+
     assert isinstance(desc, str)
 
 
@@ -65,6 +68,9 @@ def test_func_info_smoke(testlayout, testconfig):
     )
 
     desc = parsing.func_info(func_files, testconfig)
+
+    print(desc)
+
     assert isinstance(desc, str)
 
 
