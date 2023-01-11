@@ -13,11 +13,7 @@ def test_anat_info_smoke(testlayout, testconfig):
         suffix="T1w",
         extension=[".nii.gz"],
     )
-
     desc = parsing.anat_info(anat_files, testconfig)
-
-    print(desc)
-
     assert isinstance(desc, str)
 
 
@@ -32,11 +28,7 @@ def test_dwi_info_smoke(testlayout, testconfig):
         datatype="dwi",
         extension=[".nii.gz"],
     )
-
     desc = parsing.dwi_info(dwi_files, testconfig)
-
-    print(desc)
-
     assert isinstance(desc, str)
 
 
@@ -52,8 +44,8 @@ def test_fmap_info_smoke(testlayout, testconfig):
         suffix="phasediff",
         extension=[".nii.gz"],
     )
-
     desc = parsing.fmap_info(testlayout, fmap_files, testconfig)
+    print(desc)
     assert isinstance(desc, str)
 
 
@@ -69,11 +61,7 @@ def test_func_info_smoke(testlayout, testconfig):
         run="01",
         extension=[".nii.gz"],
     )
-
     desc = parsing.func_info(func_files, testconfig)
-
-    print(desc)
-
     assert isinstance(desc, str)
 
 
