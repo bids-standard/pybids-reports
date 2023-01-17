@@ -30,7 +30,7 @@ repos:
 #   - id: mypy
 
 - repo: https://github.com/pyCQA/isort
-  rev: 5.10.1
+  rev: 5.11.4
   hooks:
   - id: isort
 
