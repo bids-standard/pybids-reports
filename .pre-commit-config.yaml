@@ -30,7 +30,7 @@ repos:
 #   - id: mypy
 
 - repo: https://github.com/pyCQA/isort
-  rev: 5.11.4
+  rev: 5.10.1
   hooks:
   - id: isort
 
@@ -40,3 +40,16 @@ repos:
   hooks:
   - id: yamlfmt
     args: [--mapping, '2', --sequence, '2', --offset, '0']
+
+
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.3.1
+  hooks:
+  - id: pyupgrade
+    args: [--py37-plus]
+
+
+- repo: https://github.com/asottile/setup-cfg-fmt
+  rev: v2.2.0
+  hooks:
+  - id: setup-cfg-fmt
