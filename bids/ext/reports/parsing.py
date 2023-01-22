@@ -172,6 +172,32 @@ def fmap_info(layout, files, config):
     return templates.fmap_info(desc_data)
 
 
+def meg_info(files):
+    """Generate a paragraph describing meg acquisition information.
+
+    Parameters
+    ----------
+    layout : :obj:`bids.layout.BIDSLayout`
+        Layout object for a BIDS dataset.
+    files : :obj:`list` of :obj:`bids.layout.models.BIDSFile`
+        List of nifti files in layout corresponding to meg scan.
+    config : :obj:`dict`
+        A dictionary with relevant information regarding sequences, sequence
+        variants, phase encoding directions, and task names.
+
+    Returns
+    -------
+    desc : :obj:`str`
+        A description of the field map's acquisition information.
+    """
+    first_file = files[0]
+    metadata = first_file.get_metadata()
+
+    desc_data = {**device_info(metadata), **metadata}
+
+    return templates.meg_info(desc_data)
+
+
 def device_info(metadata):
 
     return {

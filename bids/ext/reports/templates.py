@@ -10,8 +10,6 @@ def render(template_name=None, data=None):
 
     with open(template_file) as template:
 
-        print(data)
-
         args = {
             "template": template,
             "data": data,
@@ -22,8 +20,9 @@ def render(template_name=None, data=None):
         tmp = chevron.render(**args)
         tmp = highlight_missing_tags(tmp)
 
-        print()
         print(tmp)
+
+        return tmp
 
 
 def highlight_missing_tags(foo):
@@ -54,3 +53,11 @@ def dwi_info(desc_data):
 
 def fmap_info(desc_data):
     return render(template_name="fmap.mustache", data=desc_data)
+
+
+def pet_info(desc_data):
+    return render(template_name="pet.mustache", data=desc_data)
+
+
+def meg_info(desc_data):
+    return render(template_name="meeg.mustache", data=desc_data)

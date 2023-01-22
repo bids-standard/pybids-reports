@@ -26,7 +26,7 @@ def nb_runs(nb_runs: int):
 def slice_order(metadata: dict) -> str:
     """Generate description of slice timing from metadata."""
     if "SliceTiming" in metadata:
-        return " in {} order".format(get_slice_info(metadata["SliceTiming"]))
+        return f' in {get_slice_info(metadata["SliceTiming"])} order'
     else:
         return ""
 
