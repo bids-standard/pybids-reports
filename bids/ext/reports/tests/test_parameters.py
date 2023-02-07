@@ -80,7 +80,6 @@ def test_echo_times_fmap(testlayout):
 
 
 def test_describe_func_duration_smoke():
-
     # given
     n_vols = 100
     tr = 2.5
@@ -92,7 +91,6 @@ def test_describe_func_duration_smoke():
 
 
 def test_multiband_factor_smoke(testmeta, testmeta_light):
-
     # when
     multiband_factor = parameters.multiband_factor(testmeta)
     # then
@@ -107,7 +105,6 @@ def test_multiband_factor_smoke(testmeta, testmeta_light):
 
 
 def test_inplane_accel_smoke(testmeta, testmeta_light):
-
     # when
     multiband_factor = parameters.inplane_accel(testmeta)
     # then
@@ -131,20 +128,17 @@ def test_inplane_accel_smoke(testmeta, testmeta_light):
     ],
 )
 def test_get_slice_info(slice_times, expected):
-
     slice_order_name = parameters.get_slice_info(slice_times)
     assert slice_order_name == expected
 
 
 def test_slice_timing(testmeta):
-
     slice_str = parameters.slice_order(testmeta)
     expected = " in sequential ascending order"
     assert slice_str == expected
 
 
 def test_intendedfor_targets(testmeta_light, testlayout):
-
     intended_for = parameters.intendedfor_targets(testmeta_light, testlayout)
     assert intended_for == ""
 

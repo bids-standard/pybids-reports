@@ -202,7 +202,6 @@ def intendedfor_targets(metadata: dict, layout) -> str:
     out_list = []
 
     for scan in run_dict:
-
         s = "s" if len(run_dict[scan]) > 1 else ""
         run_str = list_to_str(run_dict[scan])
         string = "{rs} run{s} of the {sc}".format(rs=run_str, s=s, sc=scan)
