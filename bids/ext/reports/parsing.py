@@ -237,7 +237,6 @@ def parse_files(layout, data_files, config):
 
     description_list = [general_acquisition_info(data_files[0][0].get_metadata())]
     for group in data_files:
-
         if group[0].entities["datatype"] == "func":
             group_description = func_info(group, config)
 
