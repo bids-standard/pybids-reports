@@ -52,6 +52,7 @@ doc = [
 	"sphinx>=2.2",
 	"sphinx-rtd-theme",
 ]
+docs=["pybids_reports[doc]"]
 test = [
     "codecov",
     "flake8-black",
@@ -61,7 +62,7 @@ test = [
     "pytest-cov",
     'rich'
 ]
-docs=["pybids_reports[doc]"]
+tests=["pybids_reports[test]"]
 ci_tests = [
   "pybids_reports[test]",
   "pytest-xdist"
