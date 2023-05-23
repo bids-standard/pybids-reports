@@ -45,7 +45,7 @@ def testdiffimg(testlayout):
 def testconfig():
     """The standard config file for testing."""
     config_file = abspath(join(get_test_data_path(), "../../reports/config/converters.json"))
-    with open(config_file, "r") as fobj:
+    with open(config_file) as fobj:
         config = json.load(fobj)
     return config
 

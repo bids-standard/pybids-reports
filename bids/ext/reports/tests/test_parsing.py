@@ -1,5 +1,10 @@
 """Tests for bids.reports.parsing."""
+from pathlib import Path
+
+from bids.tests import get_test_data_path
 from ext.reports import parsing
+
+from bids import BIDSLayout
 
 
 def test_anat_info_smoke(testlayout, testconfig):
@@ -13,7 +18,6 @@ def test_anat_info_smoke(testlayout, testconfig):
         suffix="T1w",
         extension=[".nii.gz"],
     )
-
     desc = parsing.anat_info(anat_files, testconfig)
     assert isinstance(desc, str)
 
@@ -29,7 +33,6 @@ def test_dwi_info_smoke(testlayout, testconfig):
         datatype="dwi",
         extension=[".nii.gz"],
     )
-
     desc = parsing.dwi_info(dwi_files, testconfig)
     assert isinstance(desc, str)
 
@@ -46,7 +49,6 @@ def test_fmap_info_smoke(testlayout, testconfig):
         suffix="phasediff",
         extension=[".nii.gz"],
     )
-
     desc = parsing.fmap_info(testlayout, fmap_files, testconfig)
     assert isinstance(desc, str)
 
@@ -63,17 +65,24 @@ def test_func_info_smoke(testlayout, testconfig):
         run="01",
         extension=[".nii.gz"],
     )
-
     desc = parsing.func_info(func_files, testconfig)
     assert isinstance(desc, str)
 
 
-def test_general_acquisition_info_smoke(testmeta):
-    """Smoke test for parsing.general_acquisition_info.
+def test_meg_info_smoke():
+    """Smoke test for parsing.meg_info.
 
     It should return a str description when provided valid inputs.
     """
-    desc = parsing.general_acquisition_info(testmeta)
+    data_dir = Path(get_test_data_path()).joinpath("ds000117")
+    testlayout = BIDSLayout(data_dir)
+    meg_files = testlayout.get(
+        subject="01",
+        session="meg",
+        task="facerecognition",
+        run="01",
+    )
+    desc = parsing.meg_info(meg_files)
     assert isinstance(desc, str)
 
 

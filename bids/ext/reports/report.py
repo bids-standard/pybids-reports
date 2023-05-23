@@ -10,7 +10,7 @@ logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.report")
 
 
-class BIDSReport(object):
+class BIDSReport:
     """Generate publication-quality data acquisition section from BIDS dataset.
 
     Parameters
@@ -96,8 +96,8 @@ class BIDSReport(object):
         """
         descriptions = []
 
-        subjects = sorted(list(set([f.get_entities().get("subject") for f in files])))
-        sessions = sorted(list(set([f.get_entities().get("session") for f in files])))
+        subjects = sorted(list({f.get_entities().get("subject") for f in files}))
+        sessions = sorted(list({f.get_entities().get("session") for f in files}))
         for sub in subjects:
             subject_files = [f for f in files if f.get_entities().get("subject") == sub]
             description_list = []
@@ -110,11 +110,11 @@ class BIDSReport(object):
                         data_files,
                         self.config,
                     )
-                    ses_description[0] = "In session {0}, ".format(ses) + ses_description[0]
+                    ses_description[0] = f"In session {ses}, " + ses_description[0]
                     description_list += ses_description
                     metadata = self.layout.get_metadata(data_files[0].path)
                 else:
-                    raise Exception("No imaging files for subject {0}".format(sub))
+                    raise Exception(f"No imaging files for subject {sub}")
 
             # Assume all data were converted the same way and use the last nifti
             # file's json for conversion information.
@@ -122,10 +122,10 @@ class BIDSReport(object):
                 raise Exception("No valid jsons found. Cannot generate final paragraph.")
 
             description = "\n\t".join(description_list)
-            description += "\n\n{0}".format(parsing.final_paragraph(metadata))
+            description += f"\n\n{parsing.final_paragraph(metadata)}"
             descriptions.append(description)
         counter = Counter(descriptions)
-        print("Number of patterns detected: {0}".format(len(counter.keys())))
+        print(f"Number of patterns detected: {len(counter.keys())}")
         print(utils.reminder())
         return counter
 
@@ -170,7 +170,7 @@ class BIDSReport(object):
         for sub in subjects:
             descriptions.append(self._report_subject(subject=sub, **kwargs))
         counter = Counter(descriptions)
-        print("Number of patterns detected: {0}".format(len(counter.keys())))
+        print(f"Number of patterns detected: {len(counter.keys())}")
         print(utils.reminder())
         return counter
 
@@ -216,14 +216,14 @@ class BIDSReport(object):
                     data_files,
                     self.config,
                 )
-                ses_description[0] = "In session {0}, ".format(ses) + ses_description[0]
+                ses_description[0] = f"In session {ses}, " + ses_description[0]
                 description_list += ses_description
                 metadata = self.layout.get_metadata(data_files[0].path)
             else:
-                raise Exception("No imaging files for subject {0}".format(subject))
+                raise Exception(f"No imaging files for subject {subject}")
 
         # Assume all data were converted the same way and use the first nifti
         # file's json for conversion information.
         description = "\n\t".join(description_list)
-        description += "\n\n{0}".format(parsing.final_paragraph(metadata))
+        description += f"\n\n{parsing.final_paragraph(metadata)}"
         return description

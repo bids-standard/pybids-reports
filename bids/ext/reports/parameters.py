@@ -5,7 +5,6 @@ import logging
 import math
 import os
 import os.path as op
-from typing import List
 
 import numpy as np
 from num2words import num2words
@@ -16,10 +15,18 @@ logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.parameters")
 
 
+def nb_runs(nb_runs: int):
+    nb_runs = len(nb_runs)
+    if nb_runs == 1:
+        return f"{num2words(nb_runs).title()} run"
+    else:
+        return f"{num2words(nb_runs).title()} runs"
+
+
 def slice_order(metadata: dict) -> str:
     """Generate description of slice timing from metadata."""
     if "SliceTiming" in metadata:
-        return " in {0} order".format(get_slice_info(metadata["SliceTiming"]))
+        return f' in {get_slice_info(metadata["SliceTiming"])} order'
     else:
         return ""
 
@@ -31,7 +38,7 @@ def func_duration(nb_vols: int, tr: float) -> str:
     return f"{mins}:{secs}"
 
 
-def get_nb_vols(all_imgs) -> List[int]:
+def get_nb_vols(all_imgs) -> list[int]:
     """Get number of volumes from list of files.
 
     If all files have the same nb of vols it will return the number of volumes,
@@ -50,7 +57,7 @@ def get_nb_vols(all_imgs) -> List[int]:
 
 def nb_vols(all_imgs) -> str:
     nb_vols = get_nb_vols(all_imgs)
-    return f"{nb_vols[0]}-{nb_vols[1]}" if len(nb_vols) > 1 else str(nb_vols)
+    return f"{nb_vols[0]}-{nb_vols[1]}" if len(nb_vols) > 1 else str(nb_vols[0])
 
 
 def duration(all_imgs, metadata: dict) -> str:
@@ -160,7 +167,7 @@ def inplane_accel(metadata: dict) -> str:
 def bvals(bval_file) -> str:
     """Generate description of dMRI b-values."""
     # Parse bval file
-    with open(bval_file, "r") as file_object:
+    with open(bval_file) as file_object:
         raw_bvals = file_object.read().splitlines()
     # Flatten list of space-separated values
     bvals = [item for sublist in [line.split(" ") for line in raw_bvals] for item in sublist]
@@ -187,9 +194,9 @@ def intendedfor_targets(metadata: dict, layout) -> str:
         if target_type == "BOLD":
             iff_meta = layout.get_metadata(if_file.path)
             task = iff_meta.get("TaskName", if_file.entities["task"])
-            target_type_str = "{0} {1} scan".format(task, target_type)
+            target_type_str = f"{task} {target_type} scan"
         else:
-            target_type_str = "{0} scan".format(target_type)
+            target_type_str = f"{target_type} scan"
 
         if target_type_str not in run_dict.keys():
             run_dict[target_type_str] = []
@@ -204,13 +211,13 @@ def intendedfor_targets(metadata: dict, layout) -> str:
     for scan in run_dict:
         s = "s" if len(run_dict[scan]) > 1 else ""
         run_str = list_to_str(run_dict[scan])
-        string = "{rs} run{s} of the {sc}".format(rs=run_str, s=s, sc=scan)
+        string = f"{run_str} run{s} of the {scan}"
         out_list.append(string)
 
     return list_to_str(out_list)
 
 
-def get_slice_info(slice_times) -> str | List[str]:
+def get_slice_info(slice_times) -> str | list[str]:
     """Extract slice order from slice timing info.
 
     TODO: Be more specific with slice orders.
@@ -296,7 +303,7 @@ def sequence(metadata: dict, config: dict) -> str:
     seqs = [config["seq"].get(seq, "") for seq in seq_abbrs]
     seqs = list_to_str(seqs)
     if seq_abbrs[0] and seqs:
-        seqs += " ({0})".format(os.path.sep.join(seq_abbrs))
+        seqs += f" ({os.path.sep.join(seq_abbrs)})"
     else:
         seqs = "UNKNOwN SEQUENCE"
 
