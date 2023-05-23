@@ -1,5 +1,81 @@
 [build-system]
-requires = ["setuptools >= 30.3.0", "wheel"]
+requires = ["setuptools", "versioneer[toml]"]
+build-backend = "setuptools.build_meta"
+
+# [build-system]
+# requires = ["hatchling", "hatch-vcs", "versioneer[toml]"]
+# build-backend = "hatchling.build"
+
+# [tool.hatch.build.targets.wheel]
+# packages = ["bids/ext/reports"]
+
+# [tool.hatch.version]
+# source = "vcs"
+
+# [tool.hatch.build.hooks.vcs]
+# version-file = "bids/ext/reports/_version.py"
+
+[project]
+name = "pybids_reports"
+description = "pybids-reports: report generator for BIDS datasets"
+authors = [{ name = "PyBIDS Developers", email = "bids-discussion@googlegroups.com"}]
+maintainers = [{ name = "PyBIDS Developers", email = "bids-discussion@googlegroups.com" }]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+dependencies = [
+  "chevron",
+  "pybids>=0.15",
+  "nibabel",
+  "num2words",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering",
+]
+# Version from setuptools_scm
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "http://github.com/bids-standard/pybids-reports"
+
+[project.optional-dependencies]
+doc = [
+	"numpydoc",
+	"sphinx>=2.2",
+	"sphinx-rtd-theme",
+]
+test = [
+    "codecov",
+    "flake8-black",
+    "flake8-docstrings",
+    "flake8-isort",
+    "pytest>=3.3",
+    "pytest-cov",
+    'rich'
+]
+docs=["pybids_reports[doc]"]
+ci_tests = [
+  "pybids_reports[test]",
+  "pytest-xdist"
+]
+dev = [
+  "pybids_reports[doc]",
+  "pybids_reports[test]"
+]
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "bids/ext/reports/_version.py"
+versionfile_build = "bids/ext/reports/_version.py"
 
 [tool.black]
 line-length = 99
@@ -26,3 +102,21 @@ exclude = '''
 [tool.isort]
 profile = "black"
 multi_line_output = 3
+
+
+[tool.codespell]
+skip = "./.git,versioneer.py,_version.py,bids/ext/reports/tests/data/*"
+ignore-words-list = "te"
+
+
+[tool.mypy]
+exclude = ['bids/ext/reports/tests/']
+
+[[tool.mypy.overrides]]
+module = [
+    'ext.reports.tests.*',
+    'ext.reports._version.*',
+    'ext.reports.due.*',
+    'ext.versioneer.*',
+]
+ignore_errors = true

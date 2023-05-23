@@ -6,7 +6,7 @@ Utilities to generate the MRI data acquisition portion of a
 methods section from a BIDS dataset.
 """
 import logging
-from typing import Any, List, Set
+from typing import Any
 
 logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.utils")
