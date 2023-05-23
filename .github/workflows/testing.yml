@@ -20,9 +20,6 @@ jobs:
     outputs:
       skip: ${{ steps.result_step.outputs.ci-skip }}
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
     - id: result_step
       uses: mstachniuk/ci-skip@master
       with:
@@ -32,18 +29,20 @@ jobs:
   run_tests:
     needs: check_skip
     if: ${{ needs.check_skip.outputs.skip == 'false' }}
-    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
         python-version: ['3.8', '3.9', '3.10', '3.11']
+    runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} with Python ${{ matrix.python-version }}
     defaults:
       run:
         shell: bash
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: recursive
     - name: Set up python
       uses: actions/setup-python@v4
       with:
