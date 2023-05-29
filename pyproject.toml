@@ -1,19 +1,19 @@
-[build-system]
-requires = ["setuptools", "versioneer[toml]"]
-build-backend = "setuptools.build_meta"
-
 # [build-system]
-# requires = ["hatchling", "hatch-vcs", "versioneer[toml]"]
-# build-backend = "hatchling.build"
+# requires = ["setuptools", "versioneer[toml]"]
+# build-backend = "setuptools.build_meta"
 
-# [tool.hatch.build.targets.wheel]
-# packages = ["bids/ext/reports"]
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
-# [tool.hatch.version]
-# source = "vcs"
+[tool.hatch.version]
+source = "vcs"
 
-# [tool.hatch.build.hooks.vcs]
-# version-file = "bids/ext/reports/_version.py"
+[tool.hatch.build.targets.wheel]
+packages = ["bids/ext/reports"]
+
+[tool.hatch.build.hooks.vcs]
+version-file = "bids/ext/reports/_version.py"
 
 [project]
 name = "pybids_reports"
@@ -40,7 +40,6 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Topic :: Scientific/Engineering",
 ]
-# Version from setuptools_scm
 dynamic = ["version"]
 
 [project.urls]
