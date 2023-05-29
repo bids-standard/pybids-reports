@@ -12,44 +12,48 @@ repos:
   - id: check-added-large-files
   - id: check-case-conflict
 
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.2.4
+  hooks:
+  - id: codespell
+    args: [--toml=pyproject.toml]
+    additional_dependencies: [tomli]
+
+- repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
+  rev: 0.2.3
+  hooks:
+  - id: yamlfmt
+    args: [--mapping, '2', --sequence, '2', --offset, '0']
+
+# - repo: https://github.com/asottile/setup-cfg-fmt
+#   rev: v2.2.0
+#   hooks:
+#   - id: setup-cfg-fmt
+
+- repo: https://github.com/asottile/pyupgrade
+  rev: v3.3.1
+  hooks:
+  - id: pyupgrade
+    args: [--py38-plus]
 
 - repo: https://github.com/psf/black
   rev: 22.12.0
   hooks:
   - id: black
-
-- repo: https://github.com/pycqa/flake8
-  rev: 6.0.0
-  hooks:
-  - id: flake8
-    args: [--config=setup.cfg]
+    args: [--config=pyproject.toml, --verbose]
 
 # - repo: https://github.com/pre-commit/mirrors-mypy
 #   rev: v0.991
 #   hooks:
 #   - id: mypy
 
-- repo: https://github.com/pyCQA/isort
-  rev: 5.10.1
+# - repo: https://github.com/pyCQA/isort
+#   rev: 5.11.4
+#   hooks:
+#   - id: isort
+
+- repo: https://github.com/pycqa/flake8
+  rev: 6.0.0
   hooks:
-  - id: isort
-
-
-- repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
-  rev: 0.2.2
-  hooks:
-  - id: yamlfmt
-    args: [--mapping, '2', --sequence, '2', --offset, '0']
-
-
-- repo: https://github.com/asottile/pyupgrade
-  rev: v3.3.1
-  hooks:
-  - id: pyupgrade
-    args: [--py37-plus]
-
-
-- repo: https://github.com/asottile/setup-cfg-fmt
-  rev: v2.2.0
-  hooks:
-  - id: setup-cfg-fmt
+  - id: flake8
+    args: [--config=.flake8]

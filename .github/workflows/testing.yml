@@ -20,9 +20,6 @@ jobs:
     outputs:
       skip: ${{ steps.result_step.outputs.ci-skip }}
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
     - id: result_step
       uses: mstachniuk/ci-skip@master
       with:
@@ -32,20 +29,22 @@ jobs:
   run_tests:
     needs: check_skip
     if: ${{ needs.check_skip.outputs.skip == 'false' }}
-    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest]
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+    runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} with Python ${{ matrix.python-version }}
     defaults:
       run:
         shell: bash
     steps:
     - uses: actions/checkout@v3
+      with:
+        submodules: recursive
     - name: Set up python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Display Python version
@@ -53,10 +52,10 @@ jobs:
       run: python -c "import sys; print(sys.version)"
     - name: Install pybids-reports
       shell: bash {0}
-      run: pip install -e .[tests]
+      run: pip install .[tests]
     - name: Run tests
       shell: bash {0}
       run: python -m pytest --pyargs bids/ext/reports --cov=bids/ext/reports
     - name: Upload coverage to CodeCov
-      uses: codecov/codecov-action@v1
+      uses: codecov/codecov-action@v3
       if: success()

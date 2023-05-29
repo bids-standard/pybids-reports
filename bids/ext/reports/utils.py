@@ -6,7 +6,7 @@ Utilities to generate the MRI data acquisition portion of a
 methods section from a BIDS dataset.
 """
 import logging
-from typing import Any, List, Set
+from typing import Any
 
 logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.utils")
@@ -58,12 +58,12 @@ def reminder() -> str:
     return "Remember to double-check everything and to replace <deg> with a degree symbol."
 
 
-def remove_duplicates(seq: List[Any]) -> List[Any]:
+def remove_duplicates(seq: list[Any]) -> list[Any]:
     """Return unique elements from list while preserving order.
 
     From https://stackoverflow.com/a/480227/2589328
     """
-    seen: Set[Any] = set()
+    seen: set[Any] = set()
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x))]
 
@@ -76,10 +76,10 @@ def num_to_str(num: int | float) -> str:
         2.500 -> '2.5'
         3. -> '3'
     """
-    return "{0:0.02f}".format(num).rstrip("0").rstrip(".")
+    return f"{num:0.02f}".rstrip("0").rstrip(".")
 
 
-def list_to_str(lst: List[str]) -> str:
+def list_to_str(lst: list[str]) -> str:
     """Turn a list into a comma- and/or and-separated string.
 
     Parameters
@@ -99,7 +99,7 @@ def list_to_str(lst: List[str]) -> str:
         str_ = " and ".join(lst)
     elif len(lst) > 2:
         str_ = ", ".join(lst[:-1])
-        str_ += ", and {0}".format(lst[-1])
+        str_ += f", and {lst[-1]}"
     else:
         raise ValueError("List of length 0 provided.")
     return str_

@@ -59,7 +59,7 @@ def test_report_file_config(testlayout):
 def test_report_dict_config(testlayout):
     """Report initialization should take in a config dict and use that if provided."""
     config_file = abspath(join(get_test_data_path(), "../../reports/config/converters.json"))
-    with open(config_file, "r") as fobj:
+    with open(config_file) as fobj:
         config = json.load(fobj)
     report = BIDSReport(testlayout, config=config)
     descriptions = report.generate()
