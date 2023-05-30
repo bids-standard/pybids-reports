@@ -199,7 +199,6 @@ def meg_info(files):
 
 
 def device_info(metadata):
-
     return {
         "manufacturer": metadata.get("Manufacturer", "MANUFACTURER"),
         "model_name": metadata.get("ManufacturersModelName", "MODEL"),

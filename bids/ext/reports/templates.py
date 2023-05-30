@@ -5,11 +5,9 @@ from rich import print
 
 
 def render(template_name=None, data=None):
-
     template_file = Path(__file__).parent.joinpath("templates", "templates", template_name)
 
     with open(template_file) as template:
-
         args = {
             "template": template,
             "data": data,
