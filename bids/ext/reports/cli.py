@@ -73,7 +73,7 @@ def cli(argv: Sequence[str] = sys.argv) -> None:
 
     args, unknowns = parser.parse_known_args(argv[1:])
 
-    bids_dir = Path(args.bids_dir)
+    bids_dir = Path(args.bids_dir[0]).resolve()
     # output_dir = Path(args.output_dir)
     # participant_label = Path(args.participant_label)
 
