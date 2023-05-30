@@ -1,10 +1,13 @@
 """Parsing functions for generating BIDSReports."""
+from __future__ import annotations
+
 import logging
 import warnings
 
 import nibabel as nib
 
-from . import parameters, templates
+from . import parameters
+from . import templates
 from .utils import collect_associated_files
 
 logging.basicConfig()

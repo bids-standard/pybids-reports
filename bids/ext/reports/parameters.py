@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-"""Functions for building strings for individual parameters."""
 import logging
 import math
 import os
@@ -9,7 +8,11 @@ import os.path as op
 import numpy as np
 from num2words import num2words
 
-from .utils import list_to_str, num_to_str, remove_duplicates
+from .utils import list_to_str
+from .utils import num_to_str
+from .utils import remove_duplicates
+
+"""Functions for building strings for individual parameters."""
 
 logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.parameters")

@@ -1,4 +1,6 @@
 """Tests for bids.reports.parameters module."""
+from __future__ import annotations
+
 import pytest
 from ext.reports import parameters
 

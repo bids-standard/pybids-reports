@@ -1,12 +1,13 @@
 from __future__ import annotations
 
+import logging
+from typing import Any
+
 """Generate publication-quality data acquisition methods section from BIDS dataset.
 
 Utilities to generate the MRI data acquisition portion of a
 methods section from a BIDS dataset.
 """
-import logging
-from typing import Any
 
 logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.utils")

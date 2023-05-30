@@ -1,6 +1,12 @@
 """pybids-reports: A tool for building methods sections for BIDS datasets."""
-from . import _version, parameters, parsing, report
-from .due import Doi, due
+from __future__ import annotations
+
+from . import _version
+from . import parameters
+from . import parsing
+from . import report
+from .due import Doi
+from .due import due
 from .report import BIDSReport
 
 __all__ = ["BIDSReport", "parameters", "parsing", "report"]

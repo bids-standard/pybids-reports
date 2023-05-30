@@ -91,11 +91,6 @@ exclude = '''
 )
 '''
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-
-
 [tool.codespell]
 skip = "./.git,versioneer.py,_version.py,bids/ext/reports/tests/data/*"
 ignore-words-list = "te"

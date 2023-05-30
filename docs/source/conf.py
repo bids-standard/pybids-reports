@@ -3,15 +3,14 @@
 # This file only contains a selection of the most common options. For a full
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
-
 # -- Path setup --------------------------------------------------------------
-
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-
 # from bids.ext.reports._version import __version__
+from __future__ import annotations
+
 __version__ = "0.1.0"
 
 # The full version, including alpha/beta/rc tags
