@@ -25,12 +25,17 @@ repos:
   - id: yamlfmt
     args: [--mapping, '2', --sequence, '2', --offset, '0']
 
-
 - repo: https://github.com/asottile/pyupgrade
   rev: v3.4.0
   hooks:
   - id: pyupgrade
     args: [--py38-plus]
+
+- repo: https://github.com/asottile/reorder-python-imports
+  rev: v3.9.0
+  hooks:
+  - id: reorder-python-imports
+    args: [--py38-plus, --add-import, from __future__ import annotations]
 
 - repo: https://github.com/psf/black
   rev: 23.3.0
@@ -38,15 +43,10 @@ repos:
   - id: black
     args: [--config=pyproject.toml, --verbose]
 
-# - repo: https://github.com/pre-commit/mirrors-mypy
-#   rev: v0.991
-#   hooks:
-#   - id: mypy
-
-# - repo: https://github.com/pyCQA/isort
-#   rev: 5.11.4
-#   hooks:
-#   - id: isort
+- repo: https://github.com/pre-commit/mirrors-mypy
+  rev: v1.3.0
+  hooks:
+  - id: mypy
 
 - repo: https://github.com/pycqa/flake8
   rev: 6.0.0

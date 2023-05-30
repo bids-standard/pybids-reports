@@ -1,10 +1,12 @@
 """Tests for bids.reports.parsing."""
+from __future__ import annotations
+
 from pathlib import Path
 
-from bids.tests import get_test_data_path
 from ext.reports import parsing
 
 from bids import BIDSLayout
+from bids.tests import get_test_data_path
 
 
 def test_anat_info_smoke(testlayout, testconfig):
