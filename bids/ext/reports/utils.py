@@ -3,6 +3,9 @@ from __future__ import annotations
 import logging
 from typing import Any
 
+from bids.layout import BIDSFile
+from bids.layout import BIDSLayout
+
 """Generate publication-quality data acquisition methods section from BIDS dataset.
 
 Utilities to generate the MRI data acquisition portion of a
@@ -13,13 +16,17 @@ logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.utils")
 
 
-def collect_associated_files(layout, files, extra_entities=()):
+def collect_associated_files(
+    layout: BIDSLayout, files: list[BIDSFile], extra_entities: list[str] = []
+) -> list[BIDSFile]:
     """Collect and group BIDSFiles with multiple files per acquisition.
 
     Parameters
     ----------
     layout
+
     files : list of BIDSFile
+
     extra_entities
 
     Returns
@@ -34,7 +41,7 @@ def collect_associated_files(layout, files, extra_entities=()):
     if len(extra_entities):
         MULTICONTRAST_ENTITIES += extra_entities
 
-    collected_files = []
+    collected_files: list[BIDSFile] = []
     for f in files:
         if len(collected_files) and any(f in filegroup for filegroup in collected_files):
             continue
@@ -69,8 +76,8 @@ def remove_duplicates(seq: list[Any]) -> list[Any]:
     return [x for x in seq if not (x in seen or seen_add(x))]
 
 
-def num_to_str(num: int | float) -> str:
-    """Convert an int or float to a nice string.
+def num_to_str(num: int | float | str) -> str:
+    """Converts to a nice string.
 
     E.g.,
         21 -> '21'

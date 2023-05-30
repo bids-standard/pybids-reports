@@ -5,9 +5,12 @@ import json
 import logging
 import os.path as op
 from collections import Counter
+from typing import Any
 
 from . import parsing
 from . import utils
+from bids.layout import BIDSFile
+from bids.layout import BIDSLayout
 
 logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.report")
@@ -20,6 +23,7 @@ class BIDSReport:
     ----------
     layout : :obj:`bids.layout.BIDSLayout`
         Layout object for a BIDS dataset.
+
     config : :obj:`str` or :obj:`dict`, optional
         Configuration info for methods generation. Can be a path to a file
         (str), a dictionary, or None. If None, loads and uses default
@@ -43,7 +47,7 @@ class BIDSReport:
     supported.
     """
 
-    def __init__(self, layout, config=None):
+    def __init__(self, layout: BIDSLayout, config: None | str | dict[str, dict[str, str]] = None):
         self.layout = layout
         if config is None:
             config = op.join(
@@ -63,7 +67,7 @@ class BIDSReport:
 
         self.config = config
 
-    def generate_from_files(self, files):
+    def generate_from_files(self, files: list[BIDSFile]) -> Counter[str]:
         r"""Generate a methods section from a list of files.
 
         Parameters
@@ -132,7 +136,7 @@ class BIDSReport:
         print(utils.reminder())
         return counter
 
-    def generate(self, **kwargs):
+    def generate(self, **kwargs: Any) -> Counter[str]:
         r"""Generate the methods section.
 
         Parameters
@@ -177,7 +181,7 @@ class BIDSReport:
         print(utils.reminder())
         return counter
 
-    def _report_subject(self, subject, **kwargs):
+    def _report_subject(self, subject: str, **kwargs: Any) -> str:
         """Write a report for a single subject.
 
         Parameters

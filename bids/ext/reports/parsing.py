@@ -3,18 +3,23 @@ from __future__ import annotations
 
 import logging
 import warnings
+from typing import Any
 
 import nibabel as nib
 
 from . import parameters
 from . import templates
 from .utils import collect_associated_files
+from bids.layout import BIDSFile
+from bids.layout import BIDSLayout
 
 logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.parsing")
 
 
-def common_mri_desc(img, metadata: dict, config: dict) -> dict:
+def common_mri_desc(
+    img: nib.Nifti1Image, metadata: dict[str, Any], config: dict[str, dict[str, str]]
+) -> dict[str, Any]:
     return {
         **metadata,
         "field_strength": metadata.get("MagneticFieldStrength", "UNKNOWN"),
@@ -29,13 +34,14 @@ def common_mri_desc(img, metadata: dict, config: dict) -> dict:
     }
 
 
-def func_info(files, config):
+def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     """Generate a paragraph describing T2*-weighted functional scans.
 
     Parameters
     ----------
     files : :obj:`list` of :obj:`bids.layout.models.BIDSFile`
         List of nifti files in layout corresponding to DWI scan.
+
     config : :obj:`dict`
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
@@ -72,13 +78,14 @@ def func_info(files, config):
     return templates.func_info(desc_data)
 
 
-def anat_info(files, config):
+def anat_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     """Generate a paragraph describing T1- and T2-weighted structural scans.
 
     Parameters
     ----------
     files : :obj:`list` of :obj:`bids.layout.models.BIDSFile`
         List of nifti files in layout corresponding to DWI scan.
+
     config : :obj:`dict`
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
@@ -105,13 +112,14 @@ def anat_info(files, config):
     return templates.anat_info(desc_data)
 
 
-def dwi_info(files, config):
+def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     """Generate a paragraph describing DWI scan acquisition information.
 
     Parameters
     ----------
     files : :obj:`list` of :obj:`bids.layout.models.BIDSFile`
         List of nifti files in layout corresponding to DWI scan.
+
     config : :obj:`dict`
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
@@ -140,15 +148,17 @@ def dwi_info(files, config):
     return templates.dwi_info(desc_data)
 
 
-def fmap_info(layout, files, config):
+def fmap_info(layout: BIDSLayout, files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     """Generate a paragraph describing field map acquisition information.
 
     Parameters
     ----------
     layout : :obj:`bids.layout.BIDSLayout`
         Layout object for a BIDS dataset.
+
     files : :obj:`list` of :obj:`bids.layout.models.BIDSFile`
         List of nifti files in layout corresponding to field map scan.
+
     config : :obj:`dict`
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
@@ -175,15 +185,14 @@ def fmap_info(layout, files, config):
     return templates.fmap_info(desc_data)
 
 
-def meg_info(files):
+def meg_info(files: list[BIDSFile]) -> str:
     """Generate a paragraph describing meg acquisition information.
 
     Parameters
     ----------
-    layout : :obj:`bids.layout.BIDSLayout`
-        Layout object for a BIDS dataset.
     files : :obj:`list` of :obj:`bids.layout.models.BIDSFile`
         List of nifti files in layout corresponding to meg scan.
+
     config : :obj:`dict`
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
@@ -201,14 +210,14 @@ def meg_info(files):
     return templates.meg_info(desc_data)
 
 
-def device_info(metadata):
+def device_info(metadata: dict[str, Any]) -> dict[str, Any]:
     return {
         "manufacturer": metadata.get("Manufacturer", "MANUFACTURER"),
         "model_name": metadata.get("ManufacturersModelName", "MODEL"),
     }
 
 
-def final_paragraph(metadata):
+def final_paragraph(metadata: dict[str, Any]) -> str:
     """Describe dicom-to-nifti conversion process and methods generation.
 
     Parameters
@@ -221,7 +230,7 @@ def final_paragraph(metadata):
     desc : :obj:`str`
         Output string with scanner information.
     """
-    if "ConversionSoftware" in metadata.keys():
+    if "ConversionSoftware" in metadata:
         soft = metadata["ConversionSoftware"]
         vers = metadata["ConversionSoftwareVersion"]
         software_str = f" using {soft} ({vers})"
@@ -230,7 +239,9 @@ def final_paragraph(metadata):
     return f"Dicoms were converted to NIfTI-1 format{software_str}."
 
 
-def parse_files(layout, data_files, config):
+def parse_files(
+    layout: BIDSLayout, data_files: list[BIDSFile], config: dict[str, dict[str, str]]
+) -> list[str]:
     """Loop through files in a BIDSLayout and generate appropriate descriptions.
 
     Then, compile all of the descriptions into a list.
@@ -239,8 +250,10 @@ def parse_files(layout, data_files, config):
     ----------
     layout : :obj:`bids.layout.BIDSLayout`
         Layout object for a BIDS dataset.
+
     data_files : :obj:`list` of :obj:`bids.layout.models.BIDSFile`
         List of nifti files in layout corresponding to subject/session combo.
+
     config : :obj:`dict`
         Configuration info for methods generation.
     """

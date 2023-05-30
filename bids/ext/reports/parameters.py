@@ -4,13 +4,18 @@ import logging
 import math
 import os
 import os.path as op
+from pathlib import Path
+from typing import Any
 
 import numpy as np
+from nibabel import Nifti1Image
 from num2words import num2words
 
 from .utils import list_to_str
 from .utils import num_to_str
 from .utils import remove_duplicates
+from bids.layout import BIDSFile
+from bids.layout import BIDSLayout
 
 """Functions for building strings for individual parameters."""
 
@@ -18,15 +23,15 @@ logging.basicConfig()
 LOGGER = logging.getLogger("pybids-reports.parameters")
 
 
-def nb_runs(nb_runs: int):
-    nb_runs = len(nb_runs)
+def nb_runs(run_list: list[str]) -> str:
+    nb_runs = len(run_list)
     if nb_runs == 1:
         return f"{num2words(nb_runs).title()} run"
     else:
         return f"{num2words(nb_runs).title()} runs"
 
 
-def slice_order(metadata: dict) -> str:
+def slice_order(metadata: dict[str, Any]) -> str:
     """Generate description of slice timing from metadata."""
     if "SliceTiming" in metadata:
         return f' in {get_slice_info(metadata["SliceTiming"])} order'
@@ -41,7 +46,7 @@ def func_duration(nb_vols: int, tr: float) -> str:
     return f"{mins}:{secs}"
 
 
-def get_nb_vols(all_imgs) -> list[int]:
+def get_nb_vols(all_imgs: list[Nifti1Image]) -> list[int]:
     """Get number of volumes from list of files.
 
     If all files have the same nb of vols it will return the number of volumes,
@@ -58,12 +63,12 @@ def get_nb_vols(all_imgs) -> list[int]:
     return [min_vols, max_vols]
 
 
-def nb_vols(all_imgs) -> str:
+def nb_vols(all_imgs: list[Nifti1Image]) -> str:
     nb_vols = get_nb_vols(all_imgs)
     return f"{nb_vols[0]}-{nb_vols[1]}" if len(nb_vols) > 1 else str(nb_vols[0])
 
 
-def duration(all_imgs, metadata: dict) -> str:
+def duration(all_imgs: list[Nifti1Image], metadata: dict[str, Any]) -> str:
     """Generate general description of scan length from files."""
 
     nb_vols = get_nb_vols(all_imgs)
@@ -78,7 +83,7 @@ def duration(all_imgs, metadata: dict) -> str:
     return f"{min_dur}-{max_dur}"
 
 
-def multiband_factor(metadata: dict) -> str:
+def multiband_factor(metadata: dict[str, Any]) -> str:
     """Generate description of the multi-band acceleration applied, if used."""
     return (
         f'MB factor={metadata["MultibandAccelerationFactor"]}'
@@ -87,7 +92,7 @@ def multiband_factor(metadata: dict) -> str:
     )
 
 
-def echo_time_ms(files) -> str:
+def echo_time_ms(files: list[BIDSFile]) -> str:
     """Generate description of echo times from metadata field.
 
     Parameters
@@ -103,15 +108,13 @@ def echo_time_ms(files) -> str:
 
     echo_times = [f.get_metadata()["EchoTime"] for f in files]
     echo_times = sorted(list(set(echo_times)))
-    if len(echo_times) > 1:
-        te = [num_to_str(t * 1000) for t in echo_times]
-        te = list_to_str(te)
-    else:
-        te = num_to_str(echo_times[0] * 1000)
-    return te
+    if len(echo_times) <= 1:
+        return num_to_str(echo_times[0] * 1000)
+    te = [num_to_str(t * 1000) for t in echo_times]
+    return list_to_str(te)
 
 
-def multi_echo(files) -> str:
+def multi_echo(files: list[BIDSFile]) -> str:
     """Generate description of echo times from metadata field.
 
     Parameters
@@ -131,7 +134,7 @@ def multi_echo(files) -> str:
     return multi_echo
 
 
-def echo_times_fmap(files):
+def echo_times_fmap(files: list[BIDSFile]) -> tuple[float, float]:
     """Generate description of echo times from metadata field for fmaps
 
     Parameters
@@ -141,7 +144,7 @@ def echo_times_fmap(files):
 
     Returns
     -------
-    te_str : str
+    te_str :
         Description of echo times.
     """
     # TODO handle all types of fieldmaps
@@ -158,7 +161,7 @@ def echo_times_fmap(files):
     return te1, te2
 
 
-def inplane_accel(metadata: dict) -> str:
+def inplane_accel(metadata: dict[str, Any]) -> str:
     """Generate description of in-plane acceleration factor, if any."""
     return (
         f'in-plane acceleration factor={metadata["ParallelReductionFactorInPlane"]}'
@@ -167,33 +170,34 @@ def inplane_accel(metadata: dict) -> str:
     )
 
 
-def bvals(bval_file) -> str:
+def bvals(bval_file: str | Path) -> str:
     """Generate description of dMRI b-values."""
     # Parse bval file
     with open(bval_file) as file_object:
         raw_bvals = file_object.read().splitlines()
     # Flatten list of space-separated values
     bvals = [item for sublist in [line.split(" ") for line in raw_bvals] for item in sublist]
-    bvals = sorted([int(v) for v in set(bvals)])
-    bvals = [num_to_str(v) for v in bvals]
-    return list_to_str(bvals)
+    bvals_as_int = sorted([int(v) for v in set(bvals)])
+    bvals_as_list = [num_to_str(v) for v in bvals_as_int]
+    return list_to_str(bvals_as_list)
 
 
-def intendedfor_targets(metadata: dict, layout) -> str:
+def intendedfor_targets(metadata: dict[str, Any], layout: BIDSLayout) -> str:
     """Generate description of intended for targets."""
 
     if "IntendedFor" not in metadata:
         return ""
 
     scans = metadata["IntendedFor"]
-    run_dict = {}
+
+    tmp_dict: dict[str, list[int]] = {}
 
     for scan in scans:
         fn = op.basename(scan)
-        if_file = [f for f in layout.get(extension=[".nii", ".nii.gz"]) if fn in f.path][0]
-        run_num = int(if_file.run)
-        target_type = if_file.entities["suffix"].upper()
 
+        if_file = [f for f in layout.get(extension=[".nii", ".nii.gz"]) if fn in f.path][0]
+
+        target_type = if_file.entities["suffix"].upper()
         if target_type == "BOLD":
             iff_meta = layout.get_metadata(if_file.path)
             task = iff_meta.get("TaskName", if_file.entities["task"])
@@ -201,16 +205,17 @@ def intendedfor_targets(metadata: dict, layout) -> str:
         else:
             target_type_str = f"{target_type} scan"
 
-        if target_type_str not in run_dict.keys():
-            run_dict[target_type_str] = []
+        run_num = int(if_file.run)
+        if target_type_str in tmp_dict:
+            tmp_dict[target_type_str].append(run_num)
+        else:
+            tmp_dict[target_type_str] = [run_num]
 
-        run_dict[target_type_str].append(run_num)
-
-    for scan in run_dict:
-        run_dict[scan] = [num2words(r, ordinal=True) for r in sorted(run_dict[scan])]
+    run_dict: dict[str, list[str]] = {
+        scan: [num2words(r, ordinal=True) for r in sorted(tmp_dict[scan])] for scan in tmp_dict
+    }
 
     out_list = []
-
     for scan in run_dict:
         s = "s" if len(run_dict[scan]) > 1 else ""
         run_str = list_to_str(run_dict[scan])
@@ -220,7 +225,7 @@ def intendedfor_targets(metadata: dict, layout) -> str:
     return list_to_str(out_list)
 
 
-def get_slice_info(slice_times) -> str | list[str]:
+def get_slice_info(slice_times: list[Any]) -> str | list[str]:
     """Extract slice order from slice timing info.
 
     TODO: Be more specific with slice orders.
@@ -255,19 +260,19 @@ def get_slice_info(slice_times) -> str | list[str]:
         slice_order_name = "interleaved descending"
 
     else:
-        slice_order = [str(s) for s in slice_order]
-        raise Exception(f"Unknown slice order: [{', '.join(slice_order)}]")
+        raise Exception(f"Unknown slice order: [{', '.join([str(s) for s in slice_order])}]")
 
     return slice_order_name
 
 
-def variants(metadata: dict, config: dict):
+def variants(metadata: dict[str, Any], config: dict[str, dict[str, str]]) -> str:
     """Extract and reformat imaging variant(s).
 
     Parameters
     ----------
     metadata : :obj:`dict`
         The metadata for the scan.
+
     config : :obj:`dict`
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
@@ -281,18 +286,17 @@ def variants(metadata: dict, config: dict):
         config["seqvar"].get(var, "UNKNOwN SEQUENCE VARIANT")
         for var in metadata.get("SequenceVariant", "").split("_")
     ]
-    variants = list_to_str(variants)
-
-    return variants
+    return list_to_str(variants)
 
 
-def sequence(metadata: dict, config: dict) -> str:
+def sequence(metadata: dict[str, Any], config: dict[str, dict[str, str]]) -> str | list[str]:
     """Extract and reformat imaging sequence(s) and variant(s) into pretty strings.
 
     Parameters
     ----------
     metadata : :obj:`dict`
         The metadata for the scan.
+
     config : :obj:`dict`
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
@@ -304,16 +308,16 @@ def sequence(metadata: dict, config: dict) -> str:
     """
     seq_abbrs = metadata.get("ScanningSequence", "").split("_")
     seqs = [config["seq"].get(seq, "") for seq in seq_abbrs]
-    seqs = list_to_str(seqs)
-    if seq_abbrs[0] and seqs:
-        seqs += f" ({os.path.sep.join(seq_abbrs)})"
+    seqs_as_str = list_to_str(seqs)
+    if seq_abbrs[0] and seqs_as_str:
+        seqs_as_str += f" ({os.path.sep.join(seq_abbrs)})"
     else:
-        seqs = "UNKNOwN SEQUENCE"
+        seqs_as_str = "UNKNOwN SEQUENCE"
 
-    return seqs
+    return seqs_as_str
 
 
-def matrix_size(img):
+def matrix_size(img: Nifti1Image) -> str:
     """Extract and reformat voxel size, matrix size, FOV, and number of slices into strings.
 
     Parameters
@@ -330,7 +334,7 @@ def matrix_size(img):
     return f"{n_x}x{n_y}"
 
 
-def voxel_size(img):
+def voxel_size(img: Nifti1Image) -> str:
     """Extract and reformat voxel size.
 
     Parameters
@@ -347,7 +351,7 @@ def voxel_size(img):
     return "x".join([num_to_str(s) for s in voxel_dims])
 
 
-def field_of_view(img):
+def field_of_view(img: Nifti1Image) -> str:
     """Extract and reformat FOV.
 
     Parameters
