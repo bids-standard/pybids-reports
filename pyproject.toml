@@ -24,6 +24,7 @@ dependencies = [
   "pybids>=0.15",
   "nibabel",
   "num2words",
+  "rich"
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -38,8 +39,13 @@ classifiers = [
 ]
 dynamic = ["version"]
 
+[project.scripts]
+pybids_reports = "reports.cli:cli"
+
 [project.urls]
 Homepage = "http://github.com/bids-standard/pybids-reports"
+Documentation = "https://cohort-creator.readthedocs.io/en/latest/"
+"Bug trakcer" = "http://github.com/bids-standard/pybids-reports/issues"
 
 [project.optional-dependencies]
 doc = [
@@ -58,7 +64,6 @@ test = [
     "flake8-isort",
     "pytest>=3.3",
     "pytest-cov",
-    'rich'
 ]
 tests=["pybids_reports[test]"]
 ci_tests = [
@@ -95,11 +100,9 @@ exclude = '''
 profile = "black"
 multi_line_output = 3
 
-
 [tool.codespell]
 skip = "./.git,versioneer.py,_version.py,bids/ext/reports/tests/data/*"
 ignore-words-list = "te"
-
 
 [tool.mypy]
 exclude = ['bids/ext/reports/tests/']
