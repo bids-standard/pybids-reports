@@ -25,10 +25,6 @@ repos:
   - id: yamlfmt
     args: [--mapping, '2', --sequence, '2', --offset, '0']
 
-# - repo: https://github.com/asottile/setup-cfg-fmt
-#   rev: v2.2.0
-#   hooks:
-#   - id: setup-cfg-fmt
 
 - repo: https://github.com/asottile/pyupgrade
   rev: v3.3.1

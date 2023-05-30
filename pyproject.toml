@@ -48,8 +48,11 @@ Homepage = "http://github.com/bids-standard/pybids-reports"
 [project.optional-dependencies]
 doc = [
 	"numpydoc",
-	"sphinx>=2.2",
-	"sphinx-rtd-theme",
+	"sphinx",
+	"furo",
+  "myst-parser",
+  "sphinx-argparse",
+  "sphinx-copybutton"
 ]
 docs=["pybids_reports[doc]"]
 test = [
@@ -70,6 +73,9 @@ dev = [
   "pybids_reports[doc]",
   "pybids_reports[test]"
 ]
+
+
+
 
 [tool.versioneer]
 VCS = "git"
