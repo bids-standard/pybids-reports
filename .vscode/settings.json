@@ -1,4 +1,3 @@
 {
-  "autoDocstring.docstringFormat": "numpy",
-  "files.insertFinalNewline": false
+  "autoDocstring.docstringFormat": "numpy"
 }
