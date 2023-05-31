@@ -20,7 +20,7 @@ def test_anat_info_smoke(testlayout, testconfig):
         suffix="T1w",
         extension=[".nii.gz"],
     )
-    desc = parsing.anat_info(anat_files, testconfig)
+    desc = parsing.anat_info(anat_files, testconfig, testlayout)
     assert isinstance(desc, str)
 
 
@@ -35,7 +35,7 @@ def test_dwi_info_smoke(testlayout, testconfig):
         datatype="dwi",
         extension=[".nii.gz"],
     )
-    desc = parsing.dwi_info(dwi_files, testconfig)
+    desc = parsing.dwi_info(dwi_files, testconfig, testlayout)
     assert isinstance(desc, str)
 
 
@@ -67,7 +67,7 @@ def test_func_info_smoke(testlayout, testconfig):
         run="01",
         extension=[".nii.gz"],
     )
-    desc = parsing.func_info(func_files, testconfig)
+    desc = parsing.func_info(func_files, testconfig, testlayout)
     assert isinstance(desc, str)
 
 

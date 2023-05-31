@@ -1,3 +1,5 @@
+bids-examples
+
 # do not track _version.py for hatch
 bids/ext/reports/_version.py
 

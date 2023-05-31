@@ -1,5 +1,5 @@
 ---
-name: Run Tests
+name: Run tests CLI
 
 on:
   push:
@@ -15,12 +15,12 @@ concurrency:
 
 jobs:
 
-  run_tests:
+  test_cli:
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ['3.8', '3.9', '3.10', '3.11']
+        python-version: ['3.11']
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} with Python ${{ matrix.python-version }}
     defaults:
@@ -37,12 +37,17 @@ jobs:
     - name: Display Python version
       shell: bash {0}
       run: python -c "import sys; print(sys.version)"
+    - name: Install bids examples
+      run: git clone https://github.com/bids-standard/bids-examples.git
     - name: Install pybids-reports
       shell: bash {0}
-      run: pip install .[tests]
-    - name: Run tests
+      run: pip install .
+    - name: Info CLI
       shell: bash {0}
-      run: python -m pytest --pyargs bids/ext/reports --cov=bids/ext/reports
-    - name: Upload coverage to CodeCov
-      uses: codecov/codecov-action@v3
-      if: success()
+      run: |
+        pybids_reports --version
+        pybids_reports --help
+    - name: Run test for CLI
+      shell: bash {0}
+      run: |
+        bash tools/run_on_examples.sh

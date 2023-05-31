@@ -1,19 +1,17 @@
-from __future__ import annotations
-
-import logging
-from typing import Any
-
-from bids.layout import BIDSFile
-from bids.layout import BIDSLayout
-
 """Generate publication-quality data acquisition methods section from BIDS dataset.
 
 Utilities to generate the MRI data acquisition portion of a
 methods section from a BIDS dataset.
 """
+from __future__ import annotations
 
-logging.basicConfig()
-LOGGER = logging.getLogger("pybids-reports.utils")
+from typing import Any
+
+from .logger import pybids_reports_logger
+from bids.layout import BIDSFile
+from bids.layout import BIDSLayout
+
+LOGGER = pybids_reports_logger()
 
 
 def collect_associated_files(

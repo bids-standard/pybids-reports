@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import Any
 
 import chevron
-from rich import print
 
 
 def render(template_name: str, data: dict[str, Any] | None = None) -> str:
@@ -20,8 +19,6 @@ def render(template_name: str, data: dict[str, Any] | None = None) -> str:
         }
         tmp = chevron.render(**args)
         tmp = highlight_missing_tags(tmp)
-
-        print(tmp)
 
         return tmp
 
