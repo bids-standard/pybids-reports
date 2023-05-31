@@ -1,8 +1,6 @@
 from __future__ import annotations
 
 import math
-import os
-import os.path as op
 from pathlib import Path
 from typing import Any
 
@@ -204,7 +202,7 @@ def intendedfor_targets(metadata: dict[str, Any], layout: BIDSLayout) -> str:
     tmp_dict: dict[str, list[int]] = {}
 
     for scan in scans:
-        fn = op.basename(scan)
+        fn = Path(scan).name
 
         if_file = [f for f in layout.get(extension=[".nii", ".nii.gz"]) if fn in f.path][0]
 
@@ -324,7 +322,7 @@ def sequence(metadata: dict[str, Any], config: dict[str, dict[str, str]]) -> str
     seqs = [config["seq"].get(seq, "") for seq in seq_abbrs]
     seqs_as_str = list_to_str(seqs)
     if seq_abbrs[0] and seqs_as_str:
-        seqs_as_str += f" ({os.path.sep.join(seq_abbrs)})"
+        seqs_as_str += f" ({'/'.join(seq_abbrs)})"
     else:
         seqs_as_str = "UNKNOwN SEQUENCE"
 
