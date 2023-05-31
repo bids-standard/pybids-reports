@@ -2,11 +2,11 @@
 from __future__ import annotations
 
 import logging
-import warnings
 from pathlib import Path
 from typing import Any
 
 import nibabel as nib
+from nibabel.filebasedimages import ImageFileError
 
 from . import parameters
 from . import templates
@@ -314,12 +314,12 @@ def parse_files(
             "fnirs",
             "microscopy",
         ]:
-            warnings.warn(group[0].entities["datatype"] + " not yet supported.")
-            continue
+            LOGGER.warning(f" {group[0].entities['datatype']} not yet supported.")
+            group_description = ""
 
         else:
-            warnings.warn(f"{group[0].filename} not yet supported.")
-            continue
+            LOGGER.warning(f" {group[0].filename} not yet supported.")
+            group_description = ""
 
         description_list.append(group_description)
 
@@ -329,7 +329,7 @@ def parse_files(
 def try_load_nii(file: BIDSFile) -> None | nib.Nifti1Image:
     try:
         img = nib.load(file)
-    except FileNotFoundError:
+    except (FileNotFoundError, ImageFileError):
         LOGGER.warning(f"\nFile not found or empty:\n {Path(file)}")
         img = None
     return img

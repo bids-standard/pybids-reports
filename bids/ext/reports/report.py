@@ -213,7 +213,7 @@ class BIDSReport:
         for ses in sessions:
             data_files = self.layout.get(
                 subject=subject,
-                extension=[".nii", ".nii.gz"],
+                extension=[".nii", ".nii.gz", ".set", ".fif", ".edf", ".bdf", ".snirf"],
                 **kwargs,
             )
 
