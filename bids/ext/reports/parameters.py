@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 import math
 import os
 import os.path as op
@@ -11,6 +10,7 @@ import numpy as np
 from nibabel import Nifti1Image
 from num2words import num2words
 
+from .logger import pybids_reports_logger
 from .utils import list_to_str
 from .utils import num_to_str
 from .utils import remove_duplicates
@@ -18,9 +18,7 @@ from bids.layout import BIDSFile
 from bids.layout import BIDSLayout
 
 """Functions for building strings for individual parameters."""
-
-logging.basicConfig()
-LOGGER = logging.getLogger("pybids-reports.parameters")
+LOGGER = pybids_reports_logger()
 
 
 def nb_runs(run_list: list[str]) -> str:
@@ -84,9 +82,7 @@ def duration(all_imgs: list[Nifti1Image], metadata: dict[str, Any]) -> str:
     nb_vols = get_nb_vols(all_imgs)
     if nb_vols is None:
         return "UNKNOWN"
-
     tr = metadata["RepetitionTime"]
-
     if len(nb_vols) <= 1:
         return func_duration(nb_vols[0], tr)
 
@@ -192,7 +188,7 @@ def bvals(bval_file: str | Path) -> str:
         raw_bvals = file_object.read().splitlines()
     # Flatten list of space-separated values
     bvals = [item for sublist in [line.split(" ") for line in raw_bvals] for item in sublist]
-    bvals_as_int = sorted([int(v) for v in set(bvals)])
+    bvals_as_int = sorted([int(v) for v in set(bvals) if v not in [""]])
     bvals_as_list = [num_to_str(v) for v in bvals_as_int]
     return list_to_str(bvals_as_list)
 

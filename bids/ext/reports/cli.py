@@ -11,9 +11,11 @@ import rich
 from reports import BIDSReport
 
 from ._version import __version__
+from .logger import pybids_reports_logger
 from bids.layout import BIDSLayout
 
 # from bids.reports import BIDSReport
+LOGGER = pybids_reports_logger()
 
 
 class MuhParser(argparse.ArgumentParser):
@@ -62,7 +64,31 @@ def base_parser() -> MuhParser:
         action="version",
         version=f"{__version__}",
     )
+    parser.add_argument(
+        "--verbosity",
+        help="""
+        Verbosity level.
+        """,
+        required=False,
+        choices=[0, 1, 2, 3],
+        default=2,
+        type=int,
+        nargs=1,
+    )
     return parser
+
+
+def set_verbosity(verbosity: int | list[int]) -> None:
+    if isinstance(verbosity, list):
+        verbosity = verbosity[0]
+    if verbosity == 0:
+        LOGGER.setLevel("ERROR")
+    elif verbosity == 1:
+        LOGGER.setLevel("WARNING")
+    elif verbosity == 2:
+        LOGGER.setLevel("INFO")
+    elif verbosity == 3:
+        LOGGER.setLevel("DEBUG")
 
 
 def cli(argv: Sequence[str] = sys.argv) -> None:
@@ -74,6 +100,10 @@ def cli(argv: Sequence[str] = sys.argv) -> None:
     bids_dir = Path(args.bids_dir[0]).resolve()
     # output_dir = Path(args.output_dir[0])
     participant_label = args.participant_label or None
+
+    set_verbosity(args.verbosity)
+
+    LOGGER.debug(f"{bids_dir}")
 
     layout = BIDSLayout(bids_dir)
 

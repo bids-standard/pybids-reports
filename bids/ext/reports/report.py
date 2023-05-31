@@ -2,18 +2,19 @@
 from __future__ import annotations
 
 import json
-import logging
 import os.path as op
 from collections import Counter
 from typing import Any
 
+from rich import print
+
 from . import parsing
 from . import utils
+from .logger import pybids_reports_logger
 from bids.layout import BIDSFile
 from bids.layout import BIDSLayout
 
-logging.basicConfig()
-LOGGER = logging.getLogger("pybids-reports.report")
+LOGGER = pybids_reports_logger()
 
 
 class BIDSReport:
@@ -176,9 +177,14 @@ class BIDSReport:
         kwargs = {k: v for k, v in kwargs.items() if k != "subject"}
         for sub in subjects:
             descriptions.append(self._report_subject(subject=sub, **kwargs))
+
+        print(descriptions)
+
         counter = Counter(descriptions)
-        print(f"Number of patterns detected: {len(counter.keys())}")
-        print(utils.reminder())
+        LOGGER.info(f"Number of patterns detected: {len(counter.keys())}")
+
+        LOGGER.info(utils.reminder())
+
         return counter
 
     def _report_subject(self, subject: str, **kwargs: Any) -> str:
@@ -193,6 +199,7 @@ class BIDSReport:
         ----------
         layout : :obj:`bids.layout.BIDSLayout`
             Layout object for a BIDS dataset.
+
         config : :obj:`dict`
             Configuration info for methods generation.
 
@@ -227,10 +234,12 @@ class BIDSReport:
                 description_list += ses_description
                 metadata = self.layout.get_metadata(data_files[0].path)
             else:
-                raise Exception(f"No imaging files for subject {subject}")
+                LOGGER.warning(f"No imaging files for subject {subject}")
+                metadata = None
 
         # Assume all data were converted the same way and use the first nifti
         # file's json for conversion information.
         description = "\n\t".join(description_list)
-        description += f"\n\n{parsing.final_paragraph(metadata)}"
+        if metadata:
+            description += f"\n\n{parsing.final_paragraph(metadata)}"
         return description

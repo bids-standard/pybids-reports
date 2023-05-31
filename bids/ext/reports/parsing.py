@@ -1,7 +1,6 @@
 """Parsing functions for generating BIDSReports."""
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 from typing import Any
 
@@ -10,12 +9,12 @@ from nibabel.filebasedimages import ImageFileError
 
 from . import parameters
 from . import templates
+from .logger import pybids_reports_logger
 from .utils import collect_associated_files
 from bids.layout import BIDSFile
 from bids.layout import BIDSLayout
 
-logging.basicConfig()
-LOGGER = logging.getLogger("pybids-reports.parsing")
+LOGGER = pybids_reports_logger()
 
 
 def common_mri_desc(
@@ -45,7 +44,7 @@ def common_mri_desc(
     }
 
 
-def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
+def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: BIDSLayout) -> str:
     """Generate a paragraph describing T2*-weighted functional scans.
 
     Parameters
@@ -62,14 +61,33 @@ def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     desc : :obj:`str`
         A description of the scan's acquisition information.
     """
+    errored_files = []
+
     first_file = files[0]
     metadata = first_file.get_metadata()
     img = try_load_nii(first_file.path)
-    all_imgs = [try_load_nii(f) for f in files]
+    if img is None:
+        errored_files.append(Path(first_file.path).relative_to(layout.root))
+
+    all_imgs = []
+    for f in files:
+        img = try_load_nii(f)
+        if img is None:
+            errored_files.append(Path(f).relative_to(layout.root))
+        else:
+            all_imgs.append(img)
+    if errored_files:
+        files_not_found_warning(list(set(errored_files)))
 
     task_name = first_file.get_entities()["task"]
 
     all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
+
+    nb_vols = "UNKNOWN"
+    duration = "UNKNOWN"
+    if all_imgs:
+        nb_vols = parameters.nb_vols(all_imgs)
+        duration = parameters.duration(all_imgs, metadata)
 
     desc_data = {
         **common_mri_desc(img, metadata, config),
@@ -81,15 +99,15 @@ def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
         "nb_runs": parameters.nb_runs(all_runs),
         "task_name": metadata.get("TaskName", task_name),
         "multi_echo": parameters.multi_echo(files),
-        "nb_vols": parameters.nb_vols(all_imgs),
-        "duration": parameters.duration(all_imgs, metadata),
+        "nb_vols": nb_vols,
+        "duration": duration,
         "scan_type": first_file.get_entities()["suffix"].replace("w", "-weighted"),
     }
 
     return templates.func_info(desc_data)
 
 
-def anat_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
+def anat_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: BIDSLayout) -> str:
     """Generate a paragraph describing T1- and T2-weighted structural scans.
 
     Parameters
@@ -109,6 +127,8 @@ def anat_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     first_file = files[0]
     metadata = first_file.get_metadata()
     img = try_load_nii(first_file.path)
+    if img is None:
+        files_not_found_warning(Path(first_file.path).relative_to(layout.root))
 
     all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
 
@@ -123,7 +143,7 @@ def anat_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     return templates.anat_info(desc_data)
 
 
-def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
+def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: BIDSLayout) -> str:
     """Generate a paragraph describing DWI scan acquisition information.
 
     Parameters
@@ -143,6 +163,8 @@ def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     first_file = files[0]
     metadata = first_file.get_metadata()
     img = try_load_nii(first_file.path)
+    if img is None:
+        files_not_found_warning(Path(first_file.path).relative_to(layout.root))
     bval_file = first_file.path.replace(".nii.gz", ".bval").replace(".nii", ".bval")
 
     all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
@@ -186,13 +208,19 @@ def fmap_info(layout: BIDSLayout, files: list[BIDSFile], config: dict[str, dict[
     first_file = files[0]
     metadata = first_file.get_metadata()
     img = try_load_nii(first_file.path)
+    if img is None:
+        files_not_found_warning(Path(first_file.path).relative_to(layout.root))
+
+    dir = "UNKNOWN PHASE ENCODING"
+    if PhaseEncodingDirection := metadata.get("PhaseEncodingDirection"):
+        dir = config["dir"].get(PhaseEncodingDirection, "UNKNOWN PHASE ENCODING")
 
     desc_data = {
         **common_mri_desc(img, metadata, config),
         "te_1": parameters.echo_times_fmap(files)[0],
         "te_2": parameters.echo_times_fmap(files)[1],
         "slice_order": parameters.slice_order(metadata),
-        "dir": config["dir"].get(metadata["PhaseEncodingDirection"], "UNKNOWN PHASE ENCODING"),
+        "dir": dir,
         "multiband_factor": parameters.multiband_factor(metadata),
         "intended_for": parameters.intendedfor_targets(metadata, layout),
     }
@@ -281,7 +309,7 @@ def parse_files(
     description_list = []
     for group in data_files:
         if group[0].entities["datatype"] == "func":
-            group_description = func_info(group, config)
+            group_description = func_info(group, config, layout)
 
         elif (group[0].entities["datatype"] == "anat") and group[0].entities["suffix"] in (
             "T1w",
@@ -294,10 +322,10 @@ def parse_files(
             "PDT2",
             "angio",
         ):
-            group_description = anat_info(group, config)
+            group_description = anat_info(group, config, layout)
 
         elif group[0].entities["datatype"] == "dwi":
-            group_description = dwi_info(group, config)
+            group_description = dwi_info(group, config, layout)
 
         elif (group[0].entities["datatype"] == "fmap") and group[0].entities[
             "suffix"
@@ -314,11 +342,11 @@ def parse_files(
             "fnirs",
             "microscopy",
         ]:
-            LOGGER.warning(f" {group[0].entities['datatype']} not yet supported.")
+            LOGGER.warning(f" '{group[0].entities['datatype']}' not yet supported.")
             group_description = ""
 
         else:
-            LOGGER.warning(f" {group[0].filename} not yet supported.")
+            LOGGER.warning(f" '{group[0].filename}' not yet supported.")
             group_description = ""
 
         description_list.append(group_description)
@@ -330,6 +358,12 @@ def try_load_nii(file: BIDSFile) -> None | nib.Nifti1Image:
     try:
         img = nib.load(file)
     except (FileNotFoundError, ImageFileError):
-        LOGGER.warning(f"\nFile not found or empty:\n {Path(file)}")
         img = None
     return img
+
+
+def files_not_found_warning(files: list[BIDSFile] | BIDSFile) -> None:
+    if not isinstance(files, list):
+        files = [files]
+    files = [str(Path(file)) for file in files]
+    LOGGER.warning(f"File not found or empty:\n {files}")
