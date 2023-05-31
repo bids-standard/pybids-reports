@@ -72,11 +72,13 @@ def cli(argv: Sequence[str] = sys.argv) -> None:
     args, unknowns = parser.parse_known_args(argv[1:])
 
     bids_dir = Path(args.bids_dir[0]).resolve()
-    # output_dir = Path(args.output_dir)
-    # participant_label = Path(args.participant_label)
+    # output_dir = Path(args.output_dir[0])
+    participant_label = args.participant_label or None
 
     layout = BIDSLayout(bids_dir)
 
     report = BIDSReport(layout)
-    # descriptions =
-    report.generate()
+    if participant_label:
+        report.generate(subject=participant_label)
+    else:
+        report.generate()
