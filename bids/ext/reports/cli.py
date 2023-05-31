@@ -3,19 +3,17 @@ from __future__ import annotations
 
 import argparse
 import sys
-from typing import IO, Sequence
 from pathlib import Path
+from typing import IO
+from typing import Sequence
 
 import rich
+from reports import BIDSReport
 
 from ._version import __version__
-
-
 from bids.layout import BIDSLayout
 
 # from bids.reports import BIDSReport
-
-from reports import BIDSReport
 
 
 class MuhParser(argparse.ArgumentParser):
