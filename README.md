@@ -1,3 +1,8 @@
+[![Run Tests](https://github.com/bids-standard/pybids-reports/actions/workflows/testing.yml/badge.svg)](https://github.com/bids-standard/pybids-reports/actions/workflows/testing.yml)
+[![Documentation Status](https://readthedocs.org/projects/pybids-reports/badge/?version=latest)](https://pybids-reports.readthedocs.io/en/latest/?badge=latest)
+![https://github.com/psf/black](https://img.shields.io/badge/code%20style-black-000000.svg)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/bids-standard/pybids-reports/main.svg)](https://results.pre-commit.ci/latest/github/bids-standard/pybids-reports/main)
+
 # pybids-reports
 
 pybids-reports is a subpackage of pyBIDS, implementing automatic report

@@ -8,6 +8,10 @@ source = "vcs"
 [tool.hatch.build.targets.wheel]
 packages = ["bids/ext/reports"]
 
+[tool.hatch.build.targets.wheel.sources]
+"src" = ""
+"scripts" = "mypackage/scripts"
+
 [tool.hatch.build.hooks.vcs]
 version-file = "bids/ext/reports/_version.py"
 
@@ -96,22 +100,24 @@ exclude = '''
 )
 '''
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-
 [tool.codespell]
 skip = "./.git,versioneer.py,_version.py,bids/ext/reports/tests/data/*"
 ignore-words-list = "te"
 
 [tool.mypy]
 exclude = ['bids/ext/reports/tests/']
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 module = [
     'ext.reports.tests.*',
     'ext.reports._version.*',
     'ext.reports.due.*',
-    'ext.versioneer.*',
 ]
 ignore_errors = true

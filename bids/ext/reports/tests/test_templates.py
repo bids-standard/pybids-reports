@@ -1,8 +1,11 @@
 """Tests for bids.reports.parsing."""
+from __future__ import annotations
+
 import json
 from pathlib import Path
 
-from ext.reports import parsing, templates
+from ext.reports import parsing
+from ext.reports import templates
 
 
 def test_pet():
