@@ -46,14 +46,22 @@ def func_duration(nb_vols: int, tr: float) -> str:
     return f"{mins}:{secs}"
 
 
-def get_nb_vols(all_imgs: list[Nifti1Image]) -> list[int]:
+def get_nb_vols(all_imgs: list[Nifti1Image | None]) -> list[int] | None:
     """Get number of volumes from list of files.
 
     If all files have the same nb of vols it will return the number of volumes,
     otherwise it will return the minimum and maximum number of volumes.
     """
-    nb_vols = [img.shape[3] for img in all_imgs]
+    nb_vols = []
+    for img in all_imgs:
+        if img is not None:
+            nb_vols.append(img.shape[3])
+        else:
+            nb_vols.append(None)
     nb_vols = list(set(nb_vols))
+
+    if nb_vols == [None]:
+        return None
 
     if len(nb_vols) <= 1:
         return [nb_vols[0]]
@@ -65,6 +73,8 @@ def get_nb_vols(all_imgs: list[Nifti1Image]) -> list[int]:
 
 def nb_vols(all_imgs: list[Nifti1Image]) -> str:
     nb_vols = get_nb_vols(all_imgs)
+    if nb_vols is None:
+        return "UNKNOWN"
     return f"{nb_vols[0]}-{nb_vols[1]}" if len(nb_vols) > 1 else str(nb_vols[0])
 
 
@@ -72,6 +82,8 @@ def duration(all_imgs: list[Nifti1Image], metadata: dict[str, Any]) -> str:
     """Generate general description of scan length from files."""
 
     nb_vols = get_nb_vols(all_imgs)
+    if nb_vols is None:
+        return "UNKNOWN"
 
     tr = metadata["RepetitionTime"]
 
@@ -105,9 +117,10 @@ def echo_time_ms(files: list[BIDSFile]) -> str:
     te : str
         Description of echo times.
     """
-
-    echo_times = [f.get_metadata()["EchoTime"] for f in files]
+    echo_times = [f.get_metadata().get("EchoTime", None) for f in files]
     echo_times = sorted(list(set(echo_times)))
+    if echo_times == [None]:
+        return "UNKNOWN"
     if len(echo_times) <= 1:
         return num_to_str(echo_times[0] * 1000)
     te = [num_to_str(t * 1000) for t in echo_times]
@@ -128,8 +141,10 @@ def multi_echo(files: list[BIDSFile]) -> str:
         Whether the data are multi-echo or single-echo.
     """
 
-    echo_times = [f.get_metadata()["EchoTime"] for f in files]
+    echo_times = [f.get_metadata().get("EchoTime", None) for f in files]
     echo_times = sorted(list(set(echo_times)))
+    if echo_times == [None]:
+        return ""
     multi_echo = "multi-echo" if len(echo_times) > 1 else "single-echo"
     return multi_echo
 
@@ -282,10 +297,11 @@ def variants(metadata: dict[str, Any], config: dict[str, dict[str, str]]) -> str
     variants : :obj:`str`
         Sequence variant names.
     """
-    variants = [
-        config["seqvar"].get(var, "UNKNOwN SEQUENCE VARIANT")
-        for var in metadata.get("SequenceVariant", "").split("_")
-    ]
+    variants = metadata.get("SequenceVariant", "")
+    if isinstance(variants, str):
+        variants = [
+            config["seqvar"].get(var, "UNKNOwN SEQUENCE VARIANT") for var in variants.split("_")
+        ]
     return list_to_str(variants)
 
 
@@ -306,7 +322,9 @@ def sequence(metadata: dict[str, Any], config: dict[str, dict[str, str]]) -> str
     seqs : :obj:`str`
         Sequence names.
     """
-    seq_abbrs = metadata.get("ScanningSequence", "").split("_")
+    seq_abbrs = metadata.get("ScanningSequence", "")
+    if isinstance(seq_abbrs, str):
+        seq_abbrs = seq_abbrs.split("_")
     seqs = [config["seq"].get(seq, "") for seq in seq_abbrs]
     seqs_as_str = list_to_str(seqs)
     if seq_abbrs[0] and seqs_as_str:
@@ -317,7 +335,7 @@ def sequence(metadata: dict[str, Any], config: dict[str, dict[str, str]]) -> str
     return seqs_as_str
 
 
-def matrix_size(img: Nifti1Image) -> str:
+def matrix_size(img: None | Nifti1Image) -> str:
     """Extract and reformat voxel size, matrix size, FOV, and number of slices into strings.
 
     Parameters
@@ -330,11 +348,13 @@ def matrix_size(img: Nifti1Image) -> str:
     matrix_size : :obj:`str`
         Matrix size string (e.g., '128x128')
     """
+    if img is None:
+        return "?x?"
     n_x, n_y = img.shape[:2]
     return f"{n_x}x{n_y}"
 
 
-def voxel_size(img: Nifti1Image) -> str:
+def voxel_size(img: None | Nifti1Image) -> str:
     """Extract and reformat voxel size.
 
     Parameters
@@ -347,11 +367,13 @@ def voxel_size(img: Nifti1Image) -> str:
     voxel_size : :obj:`str`
         Voxel size string (e.g., '2x2x2')
     """
+    if img is None:
+        return "?x?x?"
     voxel_dims = np.array(img.header.get_zooms()[:3])
     return "x".join([num_to_str(s) for s in voxel_dims])
 
 
-def field_of_view(img: Nifti1Image) -> str:
+def field_of_view(img: None | Nifti1Image) -> str:
     """Extract and reformat FOV.
 
     Parameters
@@ -364,6 +386,8 @@ def field_of_view(img: Nifti1Image) -> str:
     fov : :obj:`str`
         Field of view string (e.g., '256x256')
     """
+    if img is None:
+        return "?x?"
     n_x, n_y = img.shape[:2]
     voxel_dims = np.array(img.header.get_zooms()[:3])
     fov = [n_x, n_y] * voxel_dims[:2]

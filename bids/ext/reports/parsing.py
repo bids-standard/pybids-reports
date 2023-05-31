@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import warnings
+from pathlib import Path
 from typing import Any
 
 import nibabel as nib
@@ -18,19 +19,29 @@ LOGGER = logging.getLogger("pybids-reports.parsing")
 
 
 def common_mri_desc(
-    img: nib.Nifti1Image, metadata: dict[str, Any], config: dict[str, dict[str, str]]
+    img: None | nib.Nifti1Image, metadata: dict[str, Any], config: dict[str, dict[str, str]]
 ) -> dict[str, Any]:
+    nb_slices = "UNKNOWN"
+    if "SliceTiming" in metadata:
+        nb_slices = str(len(metadata["SliceTiming"]))
+    if img is not None and not nb_slices:
+        nb_slices = str(img.shape[2])
+
+    tr = "UNKNOWN"
+    if "RepetitionTime" in metadata:
+        tr = metadata["RepetitionTime"] * 1000
+
     return {
         **metadata,
         "field_strength": metadata.get("MagneticFieldStrength", "UNKNOWN"),
-        "tr": metadata["RepetitionTime"] * 1000,
+        "tr": tr,
         "flip_angle": metadata.get("FlipAngle", "UNKNOWN"),
         "fov": parameters.field_of_view(img),
         "matrix_size": parameters.matrix_size(img),
         "voxel_size": parameters.voxel_size(img),
         "variants": parameters.variants(metadata, config),
         "seqs": parameters.sequence(metadata, config),
-        "nb_slices": len(metadata["SliceTiming"]) if "SliceTiming" in metadata else img.shape[2],
+        "nb_slices": nb_slices,
     }
 
 
@@ -53,8 +64,8 @@ def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     """
     first_file = files[0]
     metadata = first_file.get_metadata()
-    img = nib.load(first_file.path)
-    all_imgs = [nib.load(f) for f in files]
+    img = try_load_nii(first_file.path)
+    all_imgs = [try_load_nii(f) for f in files]
 
     task_name = first_file.get_entities()["task"]
 
@@ -97,7 +108,7 @@ def anat_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     """
     first_file = files[0]
     metadata = first_file.get_metadata()
-    img = nib.load(first_file.path)
+    img = try_load_nii(first_file.path)
 
     all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
 
@@ -131,17 +142,21 @@ def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
     """
     first_file = files[0]
     metadata = first_file.get_metadata()
-    img = nib.load(first_file.path)
+    img = try_load_nii(first_file.path)
     bval_file = first_file.path.replace(".nii.gz", ".bval").replace(".nii", ".bval")
 
     all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
+
+    dmri_dir = "UNKNOWN"
+    if img is not None:
+        dmri_dir = img.shape[3]
 
     desc_data = {
         **common_mri_desc(img, metadata, config),
         "echo_time": parameters.echo_time_ms(files),
         "nb_runs": parameters.nb_runs(all_runs),
         "bvals": parameters.bvals(bval_file),
-        "dmri_dir": img.shape[3],
+        "dmri_dir": dmri_dir,
         "multiband_factor": parameters.multiband_factor(metadata),
     }
 
@@ -170,7 +185,7 @@ def fmap_info(layout: BIDSLayout, files: list[BIDSFile], config: dict[str, dict[
     """
     first_file = files[0]
     metadata = first_file.get_metadata()
-    img = nib.load(first_file.path)
+    img = try_load_nii(first_file.path)
 
     desc_data = {
         **common_mri_desc(img, metadata, config),
@@ -268,8 +283,16 @@ def parse_files(
         if group[0].entities["datatype"] == "func":
             group_description = func_info(group, config)
 
-        elif (group[0].entities["datatype"] == "anat") and group[0].entities["suffix"].endswith(
-            "w"
+        elif (group[0].entities["datatype"] == "anat") and group[0].entities["suffix"] in (
+            "T1w",
+            "T2w",
+            "PDw",
+            "T2starw",
+            "FLAIR",
+            "inplaneT1",
+            "inplaneT2",
+            "PDT2",
+            "angio",
         ):
             group_description = anat_info(group, config)
 
@@ -301,3 +324,12 @@ def parse_files(
         description_list.append(group_description)
 
     return description_list
+
+
+def try_load_nii(file: BIDSFile) -> None | nib.Nifti1Image:
+    try:
+        img = nib.load(file)
+    except FileNotFoundError:
+        LOGGER.warning(f"\nFile not found or empty:\n {Path(file)}")
+        img = None
+    return img
