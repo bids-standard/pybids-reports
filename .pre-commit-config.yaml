@@ -26,7 +26,7 @@ repos:
     args: [--mapping, '2', --sequence, '2', --offset, '0']
 
 - repo: https://github.com/asottile/pyupgrade
-  rev: v3.7.0
+  rev: v3.8.0
   hooks:
   - id: pyupgrade
     args: [--py38-plus]
