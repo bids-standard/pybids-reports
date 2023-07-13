@@ -118,3 +118,12 @@ module = [
     'bids.ext.reports.due.*',
 ]
 ignore_errors = true
+
+[tool.coverage.paths]
+source = [
+  "bids/ext/reports",
+  "**/bids/ext/reports",
+]
+
+[tool.coverage.report]
+include_namespace_packages = true
