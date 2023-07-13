@@ -18,7 +18,7 @@ report before putting it to use.
 Additionally, only MRI datatypes (func, anat, fmap, and dwi) are currently
 supported.
 
-### Quickstart
+## Quickstart
 
 A simple example of standard usage follows. We assume that we have a root folder
 containing a BIDS-compliant project in `/bidsproject`.
@@ -31,7 +31,7 @@ update example below
 
 ```python
 from bids.layout import BIDSLayout
-from bids.reports import BIDSReport
+from ext.reports import BIDSReport
 
 # Load the BIDS dataset
 layout = BIDSLayout('/bidsproject')
