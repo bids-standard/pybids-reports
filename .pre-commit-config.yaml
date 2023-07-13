@@ -11,6 +11,7 @@ repos:
   - id: check-ast
   - id: check-added-large-files
   - id: check-case-conflict
+  - id: check-toml
 
 - repo: https://github.com/codespell-project/codespell
   rev: v2.2.5
