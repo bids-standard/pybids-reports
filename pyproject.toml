@@ -41,7 +41,7 @@ classifiers = [
 dynamic = ["version"]
 
 [project.scripts]
-pybids_reports = "reports.cli:cli"
+pybids_reports = "bids.ext.reports.cli:cli"
 
 [project.urls]
 Homepage = "http://github.com/bids-standard/pybids-reports"
