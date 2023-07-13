@@ -42,7 +42,7 @@ jobs:
       run: pip install .[tests]
     - name: Run tests
       shell: bash {0}
-      run: python -m pytest --pyargs bids/ext/reports --cov=bids/ext/reports
+      run: python -m pytest --pyargs bids.ext.reports --cov=bids/ext/reports
     - name: Upload coverage to CodeCov
       uses: codecov/codecov-action@v3
       if: success()
