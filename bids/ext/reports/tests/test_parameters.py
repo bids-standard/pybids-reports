@@ -2,7 +2,8 @@
 from __future__ import annotations
 
 import pytest
-from ext.reports import parameters
+
+from bids.ext.reports import parameters
 
 
 @pytest.mark.parametrize(
