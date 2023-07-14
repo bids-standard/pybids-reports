@@ -8,10 +8,10 @@ from typing import IO
 from typing import Sequence
 
 import rich
-from reports import BIDSReport
 
 from ._version import __version__
 from .logger import pybids_reports_logger
+from bids.ext.reports import BIDSReport
 from bids.layout import BIDSLayout
 
 # from bids.reports import BIDSReport

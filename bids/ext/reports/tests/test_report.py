@@ -6,8 +6,7 @@ from collections import Counter
 from os.path import abspath
 from os.path import join
 
-from ext.reports import BIDSReport
-
+from bids.ext.reports import BIDSReport
 from bids.tests import get_test_data_path
 
 
