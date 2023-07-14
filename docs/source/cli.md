@@ -5,5 +5,5 @@ Command line API
 ================
 
 .. argparse::
-   :ref: pybids_reports.cli
+   :ref: bids.ext.reports.cli
    :prog: cli
