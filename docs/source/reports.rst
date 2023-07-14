@@ -1,10 +1,10 @@
-reports package
-===============
+bids.ext.reports package
+========================
 
 Module contents
 ---------------
 
-.. automodule:: reports
+.. automodule:: bids.ext.reports
    :members:
    :undoc-members:
    :show-inheritance:
@@ -13,26 +13,26 @@ Module contents
 Submodules
 ----------
 
-reports.parameters module
--------------------------
+bids.ext.reports.parameters module
+----------------------------------
 
-.. automodule:: reports.parameters
+.. automodule:: bids.ext.reports.parameters
    :members:
    :undoc-members:
    :show-inheritance:
 
-reports.parsing module
-----------------------
+bids.ext.reports.parsing module
+-------------------------------
 
-.. automodule:: reports.parsing
+.. automodule:: bids.ext.reports.parsing
    :members:
    :undoc-members:
    :show-inheritance:
 
-reports.report module
----------------------
+bids.ext.reports.report module
+------------------------------
 
-.. automodule:: reports.report
+.. automodule:: bids.ext.reports.report
    :members:
    :undoc-members:
    :show-inheritance:
