@@ -1,4 +1,0 @@
-include versioneer.py
-include bids/ext/reports/_version.py
-recursive-include bids/ext/reports/config *.json
-recursive-include bids/ext/reports/tests/data *
