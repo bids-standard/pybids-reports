@@ -8,6 +8,9 @@ source = "vcs"
 [tool.hatch.build.targets.wheel]
 packages = ["bids"]
 only-include = ["bids/ext/reports"]
+# recursive-include bids/ext/reports/config *.json
+# recursive-include bids/ext/reports/tests/data *
+
 
 [tool.hatch.build.hooks.vcs]
 version-file = "bids/ext/reports/_version.py"
