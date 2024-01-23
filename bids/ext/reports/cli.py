@@ -23,7 +23,17 @@ class MuhParser(argparse.ArgumentParser):
         rich.print(message, file=file)
 
 
+def _path_exists(path, parser):
+    """Ensure a given path exists."""
+    if path is None or not Path(path).exists():
+        raise parser.error(f"Path does not exist: <{path}>.")
+
+    return Path(path).absolute()
+
+
 def base_parser() -> MuhParser:
+    from functools import partial
+
     parser = MuhParser(
         prog="pybids_reports",
         description="Report generator for BIDS datasets.",
@@ -32,31 +42,32 @@ def base_parser() -> MuhParser:
         see the online doc https://pybids-reports.readthedocs.io/en/latest/
         """,
     )
+    PathExists = partial(_path_exists, parser=parser)
+
     parser.add_argument(
         "bids_dir",
-        help="""
-        Path to BIDS dataset.
-        """,
-        nargs=1,
+        action="store",
+        type=PathExists,
+        help="Path to BIDS dataset.",
     )
     parser.add_argument(
         "output_dir",
-        help="""
-        Output path.
-        """,
-        nargs=1,
+        action="store",
+        type=Path,
+        help="Output path.",
     )
     parser.add_argument(
         "--participant_label",
-        help="""
-        The label(s) of the participant(s) that should be used for the report.
-        The label corresponds to sub-<participant_label> from the BIDS spec
-        (so it does not include "sub-").
+        help="""\
+The label(s) of the participant(s) that should be used for the report.
+The label corresponds to sub-<participant_label> from the BIDS spec
+(so it does not include "sub-").
 
-        If this parameter is not provided, The first subject will be used.
-        Multiple participants can be specified with a space separated list.
+If this parameter is not provided, The first subject will be used.
+Multiple participants can be specified with a space separated list.
         """,
         nargs="+",
+        default=None,
     )
     parser.add_argument(
         "-v",
@@ -66,14 +77,12 @@ def base_parser() -> MuhParser:
     )
     parser.add_argument(
         "--verbosity",
-        help="""
-        Verbosity level.
-        """,
         required=False,
         choices=[0, 1, 2, 3],
         default=2,
         type=int,
         nargs=1,
+        help="Verbosity level.",
     )
     return parser
 
@@ -81,6 +90,7 @@ def base_parser() -> MuhParser:
 def set_verbosity(verbosity: int | list[int]) -> None:
     if isinstance(verbosity, list):
         verbosity = verbosity[0]
+
     if verbosity == 0:
         LOGGER.setLevel("ERROR")
     elif verbosity == 1:
@@ -95,15 +105,15 @@ def cli(argv: Sequence[str] = sys.argv) -> None:
     """Entry point."""
     parser = base_parser()
 
-    args, unknowns = parser.parse_known_args(argv[1:])
+    args, unknowns = parser.parse_args(argv)
 
-    bids_dir = Path(args.bids_dir[0]).resolve()
-    # output_dir = Path(args.output_dir[0])
+    bids_dir = args.bids_dir.resolve()
+    # output_dir = args.output_dir
     participant_label = args.participant_label or None
 
     set_verbosity(args.verbosity)
 
-    LOGGER.debug(f"{bids_dir}")
+    LOGGER.debug(bids_dir)
 
     layout = BIDSLayout(bids_dir)
 

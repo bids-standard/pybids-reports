@@ -7,6 +7,7 @@ import chevron
 
 
 def render(template_name: str, data: dict[str, Any] | None = None) -> str:
+    """Render a mustache template."""
     template_file = Path(__file__).resolve().parent / "templates" / "templates" / template_name
 
     with open(template_file) as template:
@@ -24,6 +25,7 @@ def render(template_name: str, data: dict[str, Any] | None = None) -> str:
 
 
 def highlight_missing_tags(foo: str) -> str:
+    """Highlight missing tags in a rendered template."""
     foo = f"[blue]{foo}[/blue]"
     foo = foo.replace("{{", "[/blue][red]{{")
     foo = foo.replace("}}", "}}[/red][blue]")
@@ -31,6 +33,7 @@ def highlight_missing_tags(foo: str) -> str:
 
 
 def footer() -> str:
+    """Add footer with PyBIDS information to the report."""
     # Imported here to avoid a circular import
     from . import __version__
 
@@ -38,24 +41,30 @@ def footer() -> str:
 
 
 def anat_info(desc_data: dict[str, Any]) -> str:
+    """Generate anatomical report."""
     return render(template_name="anat.mustache", data=desc_data)
 
 
 def func_info(desc_data: dict[str, Any]) -> str:
+    """Generate functional report."""
     return render(template_name="func.mustache", data=desc_data)
 
 
 def dwi_info(desc_data: dict[str, Any]) -> str:
+    """Generate diffusion report."""
     return render(template_name="dwi.mustache", data=desc_data)
 
 
 def fmap_info(desc_data: dict[str, Any]) -> str:
+    """Generate fieldmap report."""
     return render(template_name="fmap.mustache", data=desc_data)
 
 
 def pet_info(desc_data: dict[str, Any]) -> str:
+    """Generate PET report."""
     return render(template_name="pet.mustache", data=desc_data)
 
 
 def meg_info(desc_data: dict[str, Any]) -> str:
+    """Generate MEG report."""
     return render(template_name="meeg.mustache", data=desc_data)
