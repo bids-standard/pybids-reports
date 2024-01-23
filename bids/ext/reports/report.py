@@ -11,7 +11,8 @@ from rich import print
 from . import parsing
 from . import utils
 from .logger import pybids_reports_logger
-from bids.layout import BIDSFile, BIDSLayout
+from bids.layout import BIDSFile
+from bids.layout import BIDSLayout
 
 LOGGER = pybids_reports_logger()
 

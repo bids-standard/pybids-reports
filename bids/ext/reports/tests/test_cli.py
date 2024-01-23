@@ -1,4 +1,6 @@
 """Tests for the command-line interface."""
+from __future__ import annotations
+
 import os
 
 from bids.ext.reports import cli
