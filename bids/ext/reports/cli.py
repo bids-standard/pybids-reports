@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import argparse
-import sys
 from pathlib import Path
 from typing import IO
 from typing import Sequence
@@ -101,11 +100,10 @@ def set_verbosity(verbosity: int | list[int]) -> None:
         LOGGER.setLevel("DEBUG")
 
 
-def cli(argv: Sequence[str] = sys.argv) -> None:
+def cli(argv: Sequence[str] = None, namespace=None) -> None:
     """Entry point."""
     parser = base_parser()
-
-    args, unknowns = parser.parse_args(argv)
+    args = parser.parse_args(argv, namespace)
 
     bids_dir = args.bids_dir.resolve()
     # output_dir = args.output_dir
