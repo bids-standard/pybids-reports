@@ -11,8 +11,7 @@ from rich import print
 from . import parsing
 from . import utils
 from .logger import pybids_reports_logger
-from bids.layout import BIDSFile
-from bids.layout import BIDSLayout
+from bids.layout import BIDSFile, BIDSLayout
 
 LOGGER = pybids_reports_logger()
 
@@ -74,7 +73,7 @@ class BIDSReport:
 
         Parameters
         ----------
-        files : list of BIDSImageFile objects
+        files : list of :obj:`~bids.layout.BIDSImageFile` objects
             List of files from which to generate methods description.
 
         Returns

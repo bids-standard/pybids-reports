@@ -8,18 +8,24 @@ from os.path import join
 import nibabel as nib
 import pytest
 
-from bids import BIDSLayout
+from bids.layout import BIDSLayout
 from bids.tests import get_test_data_path
 
 
-@pytest.fixture
-def testlayout():
-    """A BIDSLayout for testing."""
+@pytest.fixture(scope="module")
+def testdataset():
+    """Path to a BIDS dataset for testing."""
     data_dir = join(get_test_data_path(), "synthetic")
-    return BIDSLayout(data_dir)
+    return data_dir
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
+def testlayout(testdataset):
+    """A BIDSLayout for testing."""
+    return BIDSLayout(testdataset)
+
+
+@pytest.fixture(scope="module")
 def testimg(testlayout):
     """A Nifti1Image for testing."""
     func_files = testlayout.get(
@@ -32,7 +38,7 @@ def testimg(testlayout):
     return nib.load(func_files[0].path)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def testdiffimg(testlayout):
     """A Nifti1Image for testing."""
     dwi_files = testlayout.get(
@@ -44,7 +50,7 @@ def testdiffimg(testlayout):
     return nib.load(dwi_files[0].path)
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def testconfig():
     """The standard config file for testing."""
     config_file = abspath(join(get_test_data_path(), "../../reports/config/converters.json"))
@@ -53,7 +59,7 @@ def testconfig():
     return config
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def testmeta():
     """A small metadata dictionary for testing."""
     return {
@@ -66,7 +72,7 @@ def testmeta():
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="module")
 def testmeta_light():
     """An even smaller metadata dictionary for testing."""
     return {"RepetitionTime": 2.0}

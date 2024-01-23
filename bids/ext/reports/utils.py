@@ -8,8 +8,7 @@ from __future__ import annotations
 from typing import Any
 
 from .logger import pybids_reports_logger
-from bids.layout import BIDSFile
-from bids.layout import BIDSLayout
+from bids.layout import BIDSFile, BIDSLayout
 
 LOGGER = pybids_reports_logger()
 
@@ -21,15 +20,17 @@ def collect_associated_files(
 
     Parameters
     ----------
-    layout
-
-    files : list of BIDSFile
-
-    extra_entities
+    layout : :obj:`bids.layout.BIDSLayout`
+        Layout object for a BIDS dataset.
+    files : :obj:`list` of :obj:`bids.layout.BIDSFile`
+        Files to group.
+    extra_entities : :obj:`list` of :obj:`str`, optional
+        Additional entities to use when grouping.
+        Default is an empty list.
 
     Returns
     -------
-    collected_files : list of list of BIDSFile
+    collected_files : :obj:`list` of :obj:`list` of :obj:`bids.layout.BIDSFile`
     """
     MULTICONTRAST_ENTITIES = ["echo", "part", "ch", "direction"]
     MULTICONTRAST_SUFFIXES = [
@@ -75,7 +76,7 @@ def remove_duplicates(seq: list[Any]) -> list[Any]:
 
 
 def num_to_str(num: int | float | str) -> str:
-    """Converts to a nice string.
+    """Convert number to a nice string.
 
     E.g.,
         21 -> '21'

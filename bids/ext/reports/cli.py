@@ -3,10 +3,7 @@ from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import IO
 from typing import Sequence
-
-import rich
 
 from ._version import __version__
 from .logger import pybids_reports_logger
@@ -17,11 +14,6 @@ from bids.layout import BIDSLayout
 LOGGER = pybids_reports_logger()
 
 
-class MuhParser(argparse.ArgumentParser):
-    def _print_message(self, message: str, file: IO[str] | None = None) -> None:
-        rich.print(message, file=file)
-
-
 def _path_exists(path, parser):
     """Ensure a given path exists."""
     if path is None or not Path(path).exists():
@@ -30,16 +22,17 @@ def _path_exists(path, parser):
     return Path(path).absolute()
 
 
-def base_parser() -> MuhParser:
+def base_parser() -> argparse.ArgumentParser:
     from functools import partial
 
-    parser = MuhParser(
+    parser = argparse.ArgumentParser(
         prog="pybids_reports",
         description="Report generator for BIDS datasets.",
         epilog="""
         For a more readable version of this help section,
         see the online doc https://pybids-reports.readthedocs.io/en/latest/
         """,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     PathExists = partial(_path_exists, parser=parser)
 
@@ -100,16 +93,16 @@ def set_verbosity(verbosity: int | list[int]) -> None:
         LOGGER.setLevel("DEBUG")
 
 
-def cli(argv: Sequence[str] = None, namespace=None) -> None:
+def cli(args: Sequence[str] = None, namespace=None) -> None:
     """Entry point."""
     parser = base_parser()
-    args = parser.parse_args(argv, namespace)
+    opts = parser.parse_args(args, namespace)
 
-    bids_dir = args.bids_dir.resolve()
-    # output_dir = args.output_dir
-    participant_label = args.participant_label or None
+    bids_dir = opts.bids_dir.resolve()
+    output_dir = opts.output_dir
+    participant_label = opts.participant_label or None
 
-    set_verbosity(args.verbosity)
+    set_verbosity(opts.verbosity)
 
     LOGGER.debug(bids_dir)
 
@@ -117,6 +110,9 @@ def cli(argv: Sequence[str] = None, namespace=None) -> None:
 
     report = BIDSReport(layout)
     if participant_label:
-        report.generate(subject=participant_label)
+        counter = report.generate(subject=participant_label)
     else:
-        report.generate()
+        counter = report.generate()
+
+    with open(output_dir / "report.txt", "w") as f:
+        f.write(str(counter.most_common()[0][0]))

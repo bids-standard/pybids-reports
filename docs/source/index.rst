@@ -12,7 +12,6 @@ Welcome to pybids-reports's documentation!
 
    reports
    cli
-   modules
    examples
 
 
