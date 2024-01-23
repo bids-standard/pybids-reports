@@ -29,7 +29,7 @@ def base_parser() -> MuhParser:
         description="Report generator for BIDS datasets.",
         epilog="""
         For a more readable version of this help section,
-        see the online doc https://cohort-creator.readthedocs.io/en/latest/
+        see the online doc https://pybids-reports.readthedocs.io/en/latest/
         """,
     )
     parser.add_argument(

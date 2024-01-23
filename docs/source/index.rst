@@ -10,6 +10,10 @@ Welcome to pybids-reports's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   reports
+   cli
+   modules
+   examples
 
 
 Indices and tables

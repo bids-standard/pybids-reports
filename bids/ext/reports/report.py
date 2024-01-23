@@ -30,6 +30,7 @@ class BIDSReport:
         (str), a dictionary, or None. If None, loads and uses default
         configuration information.
         Keys in the dictionary include:
+
             'dir':      a dictionary for converting encoding direction strings
                         (e.g., j-) to descriptions (e.g., anterior to
                         posterior)
