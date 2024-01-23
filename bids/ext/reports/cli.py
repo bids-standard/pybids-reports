@@ -1,16 +1,17 @@
 """General parser for the cohort_creator package."""
 from __future__ import annotations
 
-from pathlib import Path
-from typing import IO, Sequence
-
 import argparse
-import rich
-from bids.layout import BIDSLayout
+from pathlib import Path
+from typing import IO
+from typing import Sequence
 
+import rich
+
+from bids.ext.reports import BIDSReport
 from bids.ext.reports._version import __version__
 from bids.ext.reports.logger import pybids_reports_logger
-from bids.ext.reports import BIDSReport
+from bids.layout import BIDSLayout
 
 # from bids.reports import BIDSReport
 LOGGER = pybids_reports_logger()
