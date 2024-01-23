@@ -1,14 +1,16 @@
 """General parser for the cohort_creator package."""
 from __future__ import annotations
 
-import argparse
 from pathlib import Path
-from typing import Sequence
+from typing import IO, Sequence
 
-from ._version import __version__
-from .logger import pybids_reports_logger
-from bids.ext.reports import BIDSReport
+import argparse
+import rich
 from bids.layout import BIDSLayout
+
+from bids.ext.reports._version import __version__
+from bids.ext.reports.logger import pybids_reports_logger
+from bids.ext.reports import BIDSReport
 
 # from bids.reports import BIDSReport
 LOGGER = pybids_reports_logger()
@@ -22,18 +24,24 @@ def _path_exists(path, parser):
     return Path(path).absolute()
 
 
-def base_parser() -> argparse.ArgumentParser:
+class MuhParser(argparse.ArgumentParser):
+    def _print_message(self, message: str, file: IO[str] | None = None) -> None:
+        rich.print(message, file=file)
+
+
+def base_parser() -> MuhParser:
     from functools import partial
 
-    parser = argparse.ArgumentParser(
+    parser = MuhParser(
         prog="pybids_reports",
         description="Report generator for BIDS datasets.",
         epilog="""
         For a more readable version of this help section,
-        see the online doc https://pybids-reports.readthedocs.io/en/latest/
+        see the online doc https://cohort-creator.readthedocs.io/en/latest/
         """,
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+
     PathExists = partial(_path_exists, parser=parser)
 
     parser.add_argument(
@@ -99,7 +107,7 @@ def cli(args: Sequence[str] = None, namespace=None) -> None:
     opts = parser.parse_args(args, namespace)
 
     bids_dir = opts.bids_dir.resolve()
-    output_dir = opts.output_dir
+    output_dir = opts.output_dir.resolve()
     participant_label = opts.participant_label or None
 
     set_verbosity(opts.verbosity)
