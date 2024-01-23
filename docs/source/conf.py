@@ -10,6 +10,7 @@
 #
 # from bids.ext.reports._version import __version__
 from __future__ import annotations
+
 import os
 import sys
 
