@@ -1,4 +1,5 @@
 """Tests for bids.reports.parsing."""
+
 from __future__ import annotations
 
 import json
