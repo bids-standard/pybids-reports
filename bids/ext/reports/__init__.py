@@ -1,4 +1,5 @@
 """pybids-reports: A tool for building methods sections for BIDS datasets."""
+
 from __future__ import annotations
 
 from . import _version

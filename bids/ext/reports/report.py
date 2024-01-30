@@ -1,4 +1,5 @@
 """Generate publication-quality data acquisition methods section from BIDS dataset."""
+
 from __future__ import annotations
 
 import json

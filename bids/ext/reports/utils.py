@@ -3,6 +3,7 @@
 Utilities to generate the MRI data acquisition portion of a
 methods section from a BIDS dataset.
 """
+
 from __future__ import annotations
 
 from typing import Any
