@@ -126,5 +126,9 @@ def cli(args: Sequence[str] = None, namespace=None) -> None:
     else:
         counter = report.generate()
 
-    with open(output_dir / "report.txt", "w") as f:
-        f.write(str(counter.most_common()[0][0]))
+    common_patterns = counter.most_common()
+    if not common_patterns:
+        LOGGER.warning("No common patterns found.")
+    else:
+        with open(output_dir / "report.txt", "w") as f:
+            f.write(str(counter.most_common()[0][0]))
