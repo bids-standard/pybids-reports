@@ -178,8 +178,6 @@ class BIDSReport:
         for sub in subjects:
             descriptions.append(self._report_subject(subject=sub, **kwargs))
 
-        print(descriptions)
-
         counter = Counter(descriptions)
         LOGGER.info(f"Number of patterns detected: {len(counter.keys())}")
 
