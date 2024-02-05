@@ -6,14 +6,12 @@ from pathlib import Path
 from typing import Any
 
 import nibabel as nib
+from bids.layout import BIDSFile, BIDSLayout
 from nibabel.filebasedimages import ImageFileError
 
-from . import parameters
-from . import templates
+from . import parameters, templates
 from .logger import pybids_reports_logger
 from .utils import collect_associated_files
-from bids.layout import BIDSFile
-from bids.layout import BIDSLayout
 
 LOGGER = pybids_reports_logger()
 

@@ -3,14 +3,13 @@
 from __future__ import annotations
 
 import json
-from os.path import abspath
-from os.path import join
+from os.path import abspath, join
 
 import nibabel as nib
 import pytest
+from bids.tests import get_test_data_path
 
 from bids import BIDSLayout
-from bids.tests import get_test_data_path
 
 
 @pytest.fixture
