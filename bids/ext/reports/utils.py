@@ -8,9 +8,9 @@ from __future__ import annotations
 
 from typing import Any
 
+from bids.layout import BIDSFile, BIDSLayout
+
 from .logger import pybids_reports_logger
-from bids.layout import BIDSFile
-from bids.layout import BIDSLayout
 
 LOGGER = pybids_reports_logger()
 

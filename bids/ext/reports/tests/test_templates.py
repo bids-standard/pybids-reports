@@ -5,8 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from bids.ext.reports import parsing
-from bids.ext.reports import templates
+from bids.ext.reports import parsing, templates
 
 
 def test_pet():
