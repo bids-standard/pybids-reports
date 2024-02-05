@@ -1,4 +1,5 @@
 """Generate publication-quality data acquisition methods section from BIDS dataset."""
+
 from __future__ import annotations
 
 import json
@@ -6,13 +7,11 @@ import os.path as op
 from collections import Counter
 from typing import Any
 
+from bids.layout import BIDSFile, BIDSLayout
 from rich import print
 
-from . import parsing
-from . import utils
+from . import parsing, utils
 from .logger import pybids_reports_logger
-from bids.layout import BIDSFile
-from bids.layout import BIDSLayout
 
 LOGGER = pybids_reports_logger()
 

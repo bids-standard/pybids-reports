@@ -6,15 +6,12 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from bids.layout import BIDSFile, BIDSLayout
 from nibabel import Nifti1Image
 from num2words import num2words
 
 from .logger import pybids_reports_logger
-from .utils import list_to_str
-from .utils import num_to_str
-from .utils import remove_duplicates
-from bids.layout import BIDSFile
-from bids.layout import BIDSLayout
+from .utils import list_to_str, num_to_str, remove_duplicates
 
 LOGGER = pybids_reports_logger()
 

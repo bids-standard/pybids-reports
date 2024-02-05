@@ -1,12 +1,15 @@
 """General parser for the cohort_creator package."""
+
 from __future__ import annotations
 
 import argparse
 from pathlib import Path
-from typing import IO
-from typing import Sequence
+from typing import IO, Sequence
 
 import rich
+from bids.layout import BIDSLayout
+
+from bids.ext.reports import BIDSReport
 
 from bids.ext.reports import BIDSReport
 from bids.ext.reports._version import __version__

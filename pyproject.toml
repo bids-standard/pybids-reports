@@ -132,3 +132,10 @@ source = [
 
 [tool.coverage.report]
 include_namespace_packages = true
+
+
+[tool.isort]
+combine_as_imports = true
+line_length = 99
+profile = "black"
+skip_gitignore = true

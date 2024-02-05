@@ -1,13 +1,14 @@
 """Tests for bids.reports.report."""
+
 from __future__ import annotations
 
 import json
 from collections import Counter
-from os.path import abspath
-from os.path import join
+from os.path import abspath, join
+
+from bids.tests import get_test_data_path
 
 from bids.ext.reports import BIDSReport
-from bids.tests import get_test_data_path
 
 
 def test_report_init(testlayout):
