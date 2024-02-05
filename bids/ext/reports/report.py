@@ -29,6 +29,7 @@ class BIDSReport:
         (str), a dictionary, or None. If None, loads and uses default
         configuration information.
         Keys in the dictionary include:
+
             'dir':      a dictionary for converting encoding direction strings
                         (e.g., j-) to descriptions (e.g., anterior to
                         posterior)
@@ -72,7 +73,7 @@ class BIDSReport:
 
         Parameters
         ----------
-        files : list of BIDSImageFile objects
+        files : list of :obj:`~bids.layout.BIDSImageFile` objects
             List of files from which to generate methods description.
 
         Returns
@@ -176,8 +177,6 @@ class BIDSReport:
         kwargs = {k: v for k, v in kwargs.items() if k != "subject"}
         for sub in subjects:
             descriptions.append(self._report_subject(subject=sub, **kwargs))
-
-        print(descriptions)
 
         counter = Counter(descriptions)
         LOGGER.info(f"Number of patterns detected: {len(counter.keys())}")

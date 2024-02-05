@@ -48,17 +48,19 @@ pybids_reports = "bids.ext.reports.cli:cli"
 
 [project.urls]
 Homepage = "http://github.com/bids-standard/pybids-reports"
-Documentation = "https://cohort-creator.readthedocs.io/en/latest/"
-"Bug trakcer" = "http://github.com/bids-standard/pybids-reports/issues"
+Documentation = "https://pybids-reports.readthedocs.io/en/latest/"
+"Bug tracker" = "http://github.com/bids-standard/pybids-reports/issues"
 
 [project.optional-dependencies]
 doc = [
+  "furo",
+  "myst-parser",
+  "nbsphinx",
 	"numpydoc",
 	"sphinx",
-	"furo",
-  "myst-parser",
   "sphinx-argparse",
-  "sphinx-copybutton"
+  "sphinx-copybutton",
+  "sphinx_gallery",
 ]
 docs=["pybids_reports[doc]"]
 test = [

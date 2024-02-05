@@ -1,3 +1,5 @@
+"""Functions for building strings for individual parameters."""
+
 from __future__ import annotations
 
 import math
@@ -12,11 +14,11 @@ from num2words import num2words
 from .logger import pybids_reports_logger
 from .utils import list_to_str, num_to_str, remove_duplicates
 
-"""Functions for building strings for individual parameters."""
 LOGGER = pybids_reports_logger()
 
 
 def nb_runs(run_list: list[str]) -> str:
+    """Generate description of number of runs from list of files."""
     nb_runs = len(run_list)
     if nb_runs == 1:
         return f"{num2words(nb_runs).title()} run"
@@ -65,6 +67,7 @@ def get_nb_vols(all_imgs: list[Nifti1Image | None]) -> list[int] | None:
 
 
 def nb_vols(all_imgs: list[Nifti1Image]) -> str:
+    """Generate description of number of volumes from files."""
     nb_vols = get_nb_vols(all_imgs)
     if nb_vols is None:
         return "UNKNOWN"
@@ -73,7 +76,6 @@ def nb_vols(all_imgs: list[Nifti1Image]) -> str:
 
 def duration(all_imgs: list[Nifti1Image], metadata: dict[str, Any]) -> str:
     """Generate general description of scan length from files."""
-
     nb_vols = get_nb_vols(all_imgs)
     if nb_vols is None:
         return "UNKNOWN"
@@ -131,7 +133,6 @@ def multi_echo(files: list[BIDSFile]) -> str:
     multi_echo : str
         Whether the data are multi-echo or single-echo.
     """
-
     echo_times = [f.get_metadata().get("EchoTime", None) for f in files]
     echo_times = sorted(list(set(echo_times)))
     if echo_times == [None]:
@@ -190,7 +191,6 @@ def bvals(bval_file: str | Path) -> str:
 
 def intendedfor_targets(metadata: dict[str, Any], layout: BIDSLayout) -> str:
     """Generate description of intended for targets."""
-
     if "IntendedFor" not in metadata:
         return ""
 

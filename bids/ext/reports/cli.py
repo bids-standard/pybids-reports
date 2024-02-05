@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import sys
 from pathlib import Path
 from typing import IO, Sequence
 
@@ -11,12 +10,19 @@ import rich
 from bids.layout import BIDSLayout
 
 from bids.ext.reports import BIDSReport
-
-from ._version import __version__
-from .logger import pybids_reports_logger
+from bids.ext.reports._version import __version__
+from bids.ext.reports.logger import pybids_reports_logger
 
 # from bids.reports import BIDSReport
 LOGGER = pybids_reports_logger()
+
+
+def _path_exists(path, parser):
+    """Ensure a given path exists."""
+    if path is None or not Path(path).exists():
+        raise parser.error(f"Path does not exist: <{path}>.")
+
+    return Path(path).absolute()
 
 
 class MuhParser(argparse.ArgumentParser):
@@ -25,6 +31,8 @@ class MuhParser(argparse.ArgumentParser):
 
 
 def base_parser() -> MuhParser:
+    from functools import partial
+
     parser = MuhParser(
         prog="pybids_reports",
         description="Report generator for BIDS datasets.",
@@ -32,32 +40,35 @@ def base_parser() -> MuhParser:
         For a more readable version of this help section,
         see the online doc https://cohort-creator.readthedocs.io/en/latest/
         """,
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
+
+    PathExists = partial(_path_exists, parser=parser)
+
     parser.add_argument(
         "bids_dir",
-        help="""
-        Path to BIDS dataset.
-        """,
-        nargs=1,
+        action="store",
+        type=PathExists,
+        help="Path to BIDS dataset.",
     )
     parser.add_argument(
         "output_dir",
-        help="""
-        Output path.
-        """,
-        nargs=1,
+        action="store",
+        type=Path,
+        help="Output path.",
     )
     parser.add_argument(
         "--participant_label",
-        help="""
-        The label(s) of the participant(s) that should be used for the report.
-        The label corresponds to sub-<participant_label> from the BIDS spec
-        (so it does not include "sub-").
+        help="""\
+The label(s) of the participant(s) that should be used for the report.
+The label corresponds to sub-<participant_label> from the BIDS spec
+(so it does not include "sub-").
 
-        If this parameter is not provided, The first subject will be used.
-        Multiple participants can be specified with a space separated list.
+If this parameter is not provided, The first subject will be used.
+Multiple participants can be specified with a space separated list.
         """,
         nargs="+",
+        default=None,
     )
     parser.add_argument(
         "-v",
@@ -67,14 +78,12 @@ def base_parser() -> MuhParser:
     )
     parser.add_argument(
         "--verbosity",
-        help="""
-        Verbosity level.
-        """,
         required=False,
         choices=[0, 1, 2, 3],
         default=2,
         type=int,
         nargs=1,
+        help="Verbosity level.",
     )
     return parser
 
@@ -82,6 +91,7 @@ def base_parser() -> MuhParser:
 def set_verbosity(verbosity: int | list[int]) -> None:
     if isinstance(verbosity, list):
         verbosity = verbosity[0]
+
     if verbosity == 0:
         LOGGER.setLevel("ERROR")
     elif verbosity == 1:
@@ -92,24 +102,30 @@ def set_verbosity(verbosity: int | list[int]) -> None:
         LOGGER.setLevel("DEBUG")
 
 
-def cli(argv: Sequence[str] = sys.argv) -> None:
+def cli(args: Sequence[str] = None, namespace=None) -> None:
     """Entry point."""
     parser = base_parser()
+    opts = parser.parse_args(args, namespace)
 
-    args, unknowns = parser.parse_known_args(argv[1:])
+    bids_dir = opts.bids_dir.absolute()
+    output_dir = opts.output_dir.absolute()
+    participant_label = opts.participant_label or None
 
-    bids_dir = Path(args.bids_dir[0]).resolve()
-    # output_dir = Path(args.output_dir[0])
-    participant_label = args.participant_label or None
+    set_verbosity(opts.verbosity)
 
-    set_verbosity(args.verbosity)
-
-    LOGGER.debug(f"{bids_dir}")
+    LOGGER.debug(bids_dir)
 
     layout = BIDSLayout(bids_dir)
 
     report = BIDSReport(layout)
     if participant_label:
-        report.generate(subject=participant_label)
+        counter = report.generate(subject=participant_label)
     else:
-        report.generate()
+        counter = report.generate()
+
+    common_patterns = counter.most_common()
+    if not common_patterns:
+        LOGGER.warning("No common patterns found.")
+    else:
+        with open(output_dir / "report.txt", "w") as f:
+            f.write(str(counter.most_common()[0][0]))

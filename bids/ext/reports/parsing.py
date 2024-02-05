@@ -17,8 +17,11 @@ LOGGER = pybids_reports_logger()
 
 
 def common_mri_desc(
-    img: None | nib.Nifti1Image, metadata: dict[str, Any], config: dict[str, dict[str, str]]
+    img: None | nib.Nifti1Image,
+    metadata: dict[str, Any],
+    config: dict[str, dict[str, str]],
 ) -> dict[str, Any]:
+    """Extract common MRI parameters from metadata."""
     nb_slices = "UNKNOWN"
     if "SliceTiming" in metadata:
         nb_slices = str(len(metadata["SliceTiming"]))
@@ -253,6 +256,7 @@ def meg_info(files: list[BIDSFile]) -> str:
 
 
 def device_info(metadata: dict[str, Any]) -> dict[str, Any]:
+    """Extract device information from metadata."""
     return {
         "manufacturer": metadata.get("Manufacturer", "MANUFACTURER"),
         "model_name": metadata.get("ManufacturersModelName", "MODEL"),
@@ -354,6 +358,7 @@ def parse_files(
 
 
 def try_load_nii(file: BIDSFile) -> None | nib.Nifti1Image:
+    """Try to load a nifti file, return None if it fails."""
     try:
         img = nib.load(file)
     except (FileNotFoundError, ImageFileError):
@@ -362,6 +367,7 @@ def try_load_nii(file: BIDSFile) -> None | nib.Nifti1Image:
 
 
 def files_not_found_warning(files: list[BIDSFile] | BIDSFile) -> None:
+    """Warn user that files were not found or empty."""
     if not isinstance(files, list):
         files = [files]
     files = [str(Path(file)) for file in files]

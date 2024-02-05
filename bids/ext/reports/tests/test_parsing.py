@@ -4,9 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from bids.layout import BIDSLayout
 from bids.tests import get_test_data_path
 
-from bids import BIDSLayout
 from bids.ext.reports import parsing
 
 
