@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from bids.ext.reports import parsing
 from bids.layout import BIDSLayout
 from bids.tests import get_test_data_path
+
+from bids.ext.reports import parsing
 
 
 def test_anat_info_smoke(testlayout, testconfig):
