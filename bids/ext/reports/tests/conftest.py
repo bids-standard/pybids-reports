@@ -7,8 +7,6 @@ from os.path import abspath, join
 
 import nibabel as nib
 import pytest
-from bids.tests import get_test_data_path
-
 from bids.layout import BIDSLayout
 from bids.tests import get_test_data_path
 
