@@ -107,8 +107,8 @@ def cli(args: Sequence[str] = None, namespace=None) -> None:
     parser = base_parser()
     opts = parser.parse_args(args, namespace)
 
-    bids_dir = opts.bids_dir.resolve()
-    output_dir = opts.output_dir.resolve()
+    bids_dir = opts.bids_dir.absolute()
+    output_dir = opts.output_dir.absolute()
     participant_label = opts.participant_label or None
 
     set_verbosity(opts.verbosity)
