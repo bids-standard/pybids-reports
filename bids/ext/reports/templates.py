@@ -40,6 +40,11 @@ def footer() -> str:
     return f"This section was (in part) generated automatically using pybids {__version__}."
 
 
+def institution_info(desc_data: dict[str, Any]) -> str:
+    """Generate institution report."""
+    return render(template_name="institution.mustache", data=desc_data)
+
+
 def anat_info(desc_data: dict[str, Any]) -> str:
     """Generate anatomical report."""
     return render(template_name="anat.mustache", data=desc_data)

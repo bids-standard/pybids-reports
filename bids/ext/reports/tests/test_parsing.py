@@ -10,6 +10,16 @@ from bids.tests import get_test_data_path
 from bids.ext.reports import parsing
 
 
+def test_institution_info(testlayout):
+    files = testlayout.get(
+        subject="01",
+        session="01",
+        extension=[".nii.gz"],
+    )
+    desc = parsing.institution_info(files)
+    assert desc == ""
+
+
 def test_anat_info_smoke(testlayout, testconfig):
     """Smoke test for parsing.anat_info.
 
