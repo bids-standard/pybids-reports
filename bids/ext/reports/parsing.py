@@ -20,7 +20,6 @@ def institution_info(files: list[BIDSFile]):
     first_file = files[0]
     metadata = first_file.get_metadata()
     if metadata.get("InstitutionName"):
-        print(metadata.get("InstitutionName"))
         return templates.institution_info(metadata)
     else:
         return ""
