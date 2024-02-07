@@ -88,15 +88,6 @@ def duration(all_imgs: list[Nifti1Image], metadata: dict[str, Any]) -> str:
     return f"{min_dur}-{max_dur}"
 
 
-def multiband_factor(metadata: dict[str, Any]) -> str:
-    """Generate description of the multi-band acceleration applied, if used."""
-    return (
-        f'MB factor={metadata["MultibandAccelerationFactor"]}'
-        if metadata.get("MultibandAccelerationFactor", 1) > 1
-        else ""
-    )
-
-
 def echo_time_ms(files: list[BIDSFile]) -> str:
     """Generate description of echo times from metadata field.
 
@@ -166,15 +157,6 @@ def echo_times_fmap(files: list[BIDSFile]) -> tuple[float, float]:
         te1 = echo_times1[0] * 1000
         te2 = echo_times2[0] * 1000
     return te1, te2
-
-
-def inplane_accel(metadata: dict[str, Any]) -> str:
-    """Generate description of in-plane acceleration factor, if any."""
-    return (
-        f'in-plane acceleration factor={metadata["ParallelReductionFactorInPlane"]}'
-        if metadata.get("ParallelReductionFactorInPlane", 1) > 1
-        else ""
-    )
 
 
 def bvals(bval_file: str | Path) -> str:

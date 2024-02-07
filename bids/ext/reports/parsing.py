@@ -34,9 +34,7 @@ def common_mri_desc(
 
     return {
         **metadata,
-        "field_strength": metadata.get("MagneticFieldStrength", "UNKNOWN"),
         "tr": tr,
-        "flip_angle": metadata.get("FlipAngle", "UNKNOWN"),
         "fov": parameters.field_of_view(img),
         "matrix_size": parameters.matrix_size(img),
         "voxel_size": parameters.voxel_size(img),
@@ -96,8 +94,6 @@ def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: 
         **device_info(metadata),
         "echo_time": parameters.echo_time_ms(files),
         "slice_order": parameters.slice_order(metadata),
-        "multiband_factor": parameters.multiband_factor(metadata),
-        "inplane_accel": parameters.inplane_accel(metadata),
         "nb_runs": parameters.nb_runs(all_runs),
         "task_name": metadata.get("TaskName", task_name),
         "multi_echo": parameters.multi_echo(files),
@@ -181,7 +177,6 @@ def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: B
         "nb_runs": parameters.nb_runs(all_runs),
         "bvals": parameters.bvals(bval_file),
         "dmri_dir": dmri_dir,
-        "multiband_factor": parameters.multiband_factor(metadata),
     }
 
     return templates.dwi_info(desc_data)
@@ -223,7 +218,6 @@ def fmap_info(layout: BIDSLayout, files: list[BIDSFile], config: dict[str, dict[
         "te_2": parameters.echo_times_fmap(files)[1],
         "slice_order": parameters.slice_order(metadata),
         "dir": dir,
-        "multiband_factor": parameters.multiband_factor(metadata),
         "intended_for": parameters.intendedfor_targets(metadata, layout),
     }
 

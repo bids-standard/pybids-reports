@@ -94,34 +94,6 @@ def test_describe_func_duration_smoke():
     assert duration == expected
 
 
-def test_multiband_factor_smoke(testmeta, testmeta_light):
-    # when
-    multiband_factor = parameters.multiband_factor(testmeta)
-    # then
-    expected = "MB factor=2"
-    assert multiband_factor == expected
-
-    # when
-    multiband_factor = parameters.multiband_factor(testmeta_light)
-    # then
-    expected = ""
-    assert multiband_factor == expected
-
-
-def test_inplane_accel_smoke(testmeta, testmeta_light):
-    # when
-    multiband_factor = parameters.inplane_accel(testmeta)
-    # then
-    expected = "in-plane acceleration factor=2"
-    assert multiband_factor == expected
-
-    # when
-    multiband_factor = parameters.inplane_accel(testmeta_light)
-    # then
-    expected = ""
-    assert multiband_factor == expected
-
-
 @pytest.mark.parametrize(
     "slice_times, expected",
     [
