@@ -237,7 +237,7 @@ class BIDSReport:
 
         # Assume all data were converted the same way and use the first nifti
         # file's json for conversion information.
-        description = "\n\t".join(description_list)
+        description = "\n".join(description_list)
         if metadata:
             description += f"\n\n{parsing.final_paragraph(metadata)}"
         return description
