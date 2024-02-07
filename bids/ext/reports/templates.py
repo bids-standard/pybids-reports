@@ -42,14 +42,14 @@ def footer() -> str:
     return f"This section was (in part) generated automatically using pybids {__version__}."
 
 
-def mri_scanner_info(desc_data: dict[str, Any]) -> str:
-    """Generate mri scanner info report."""
-    return render(template_name="mri_scanner_info.mustache", data=desc_data)
-
-
 def institution_info(desc_data: dict[str, Any]) -> str:
     """Generate institution report."""
     return render(template_name="institution.mustache", data=desc_data)
+
+
+def mri_scanner_info(desc_data: dict[str, Any]) -> str:
+    """Generate mri scanner info report."""
+    return render(template_name="mri_scanner_info.mustache", data=desc_data)
 
 
 def anat_info(desc_data: dict[str, Any]) -> str:
@@ -70,6 +70,11 @@ def dwi_info(desc_data: dict[str, Any]) -> str:
 def fmap_info(desc_data: dict[str, Any]) -> str:
     """Generate fieldmap report."""
     return render(template_name="fmap.mustache", data=desc_data)
+
+
+def perf_info(desc_data: dict[str, Any]) -> str:
+    """Generate ASL report."""
+    return render(template_name="perf.mustache", data=desc_data)
 
 
 def pet_info(desc_data: dict[str, Any]) -> str:

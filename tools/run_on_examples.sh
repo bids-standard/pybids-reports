@@ -1,7 +1,7 @@
 #!/bin/bash
 
 rc=0;
-for pre in asl ds00 eeg meg ieeg; do
+for pre in  asl ds00 eeg meg ieeg pet; do
     for i in $(find bids-examples -maxdepth 1 -type d -name "${pre}*"); do
         if [ "$i" == "bids-examples" ]; then
             continue
