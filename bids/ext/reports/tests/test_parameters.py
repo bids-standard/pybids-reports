@@ -16,7 +16,7 @@ from bids.ext.reports import parameters
         ("RM", "research mode (RM)"),
         ("SE", "spin echo (SE)"),
         ("SE_EP", "spin echo and echo planar (SE/EP)"),
-        ("spam egg", "UNKNOwN SEQUENCE"),
+        ("spam egg", "UNKNOWN SEQUENCE"),
     ],
 )
 def test_sequence(ScanningSequence, expected_seq, testconfig):
@@ -39,7 +39,7 @@ def test_sequence(ScanningSequence, expected_seq, testconfig):
         ("SS", "steady state"),
         ("TRSS", "time reversed steady state"),
         ("MP_SS", "MAG prepared and steady state"),
-        ("spam", "UNKNOwN SEQUENCE VARIANT"),
+        ("spam", "UNKNOWN SEQUENCE VARIANT"),
     ],
 )
 def test_variants(SequenceVariant, expected_var, testconfig):

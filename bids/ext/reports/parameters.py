@@ -273,7 +273,7 @@ def variants(metadata: dict[str, Any], config: dict[str, dict[str, str]]) -> str
     variants = metadata.get("SequenceVariant", "")
     if isinstance(variants, str):
         variants = [
-            config["seqvar"].get(var, "UNKNOwN SEQUENCE VARIANT") for var in variants.split("_")
+            config["seqvar"].get(var, "UNKNOWN SEQUENCE VARIANT") for var in variants.split("_")
         ]
     return list_to_str(variants)
 
