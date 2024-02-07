@@ -315,9 +315,15 @@ def parse_files(
     mri_scanner_info_done = False
     for group in data_files:
 
-        if not mri_scanner_info_done and group[0].entities["datatype"] in mri_datatypes:
+        if group[0].entities["datatype"] not in mri_datatypes:
+            continue
+
+        # assume all MRI data was acquires on the same scanner
+        if not mri_scanner_info_done:
             description_list.append(mri_scanner_info(group))
             mri_scanner_info_done = True
+
+        group_description = ""
 
         if group[0].entities["datatype"] == "func":
             group_description = func_info(group, config, layout)
@@ -351,6 +357,8 @@ def parse_files(
         if group[0].entities["datatype"] in mri_datatypes:
             continue
 
+        group_description = ""
+
         if group[0].entities["datatype"] in [
             "eeg",
             "meg",
@@ -362,11 +370,9 @@ def parse_files(
             "microscopy",
         ]:
             LOGGER.warning(f" '{group[0].entities['datatype']}' not yet supported.")
-            group_description = ""
 
         else:
             LOGGER.warning(f" '{group[0].filename}' not yet supported.")
-            group_description = ""
 
         description_list.append(group_description)
 
