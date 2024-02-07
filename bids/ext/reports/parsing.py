@@ -16,6 +16,21 @@ from .utils import collect_associated_files
 LOGGER = pybids_reports_logger()
 
 
+def institution_info(files: list[BIDSFile]):
+    first_file = files[0]
+    metadata = first_file.get_metadata()
+    if metadata.get("InstitutionName"):
+        return templates.institution_info(metadata)
+    else:
+        return ""
+
+
+def mri_scanner_info(files: list[BIDSFile]):
+    first_file = files[0]
+    metadata = first_file.get_metadata()
+    return templates.mri_scanner_info(metadata)
+
+
 def common_mri_desc(
     img: None | nib.Nifti1Image,
     metadata: dict[str, Any],
@@ -34,9 +49,7 @@ def common_mri_desc(
 
     return {
         **metadata,
-        "field_strength": metadata.get("MagneticFieldStrength", "UNKNOWN"),
         "tr": tr,
-        "flip_angle": metadata.get("FlipAngle", "UNKNOWN"),
         "fov": parameters.field_of_view(img),
         "matrix_size": parameters.matrix_size(img),
         "voxel_size": parameters.voxel_size(img),
@@ -93,11 +106,8 @@ def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: 
 
     desc_data = {
         **common_mri_desc(img, metadata, config),
-        **device_info(metadata),
         "echo_time": parameters.echo_time_ms(files),
         "slice_order": parameters.slice_order(metadata),
-        "multiband_factor": parameters.multiband_factor(metadata),
-        "inplane_accel": parameters.inplane_accel(metadata),
         "nb_runs": parameters.nb_runs(all_runs),
         "task_name": metadata.get("TaskName", task_name),
         "multi_echo": parameters.multi_echo(files),
@@ -181,7 +191,6 @@ def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: B
         "nb_runs": parameters.nb_runs(all_runs),
         "bvals": parameters.bvals(bval_file),
         "dmri_dir": dmri_dir,
-        "multiband_factor": parameters.multiband_factor(metadata),
     }
 
     return templates.dwi_info(desc_data)
@@ -213,17 +222,16 @@ def fmap_info(layout: BIDSLayout, files: list[BIDSFile], config: dict[str, dict[
     if img is None:
         files_not_found_warning(Path(first_file.path).relative_to(layout.root))
 
-    dir = "UNKNOWN PHASE ENCODING"
+    direction = "UNKNOWN PHASE ENCODING"
     if PhaseEncodingDirection := metadata.get("PhaseEncodingDirection"):
-        dir = config["dir"].get(PhaseEncodingDirection, "UNKNOWN PHASE ENCODING")
+        direction = config["dir"].get(PhaseEncodingDirection, "UNKNOWN PHASE ENCODING")
 
     desc_data = {
         **common_mri_desc(img, metadata, config),
         "te_1": parameters.echo_times_fmap(files)[0],
         "te_2": parameters.echo_times_fmap(files)[1],
         "slice_order": parameters.slice_order(metadata),
-        "dir": dir,
-        "multiband_factor": parameters.multiband_factor(metadata),
+        "dir": direction,
         "intended_for": parameters.intendedfor_targets(metadata, layout),
     }
 
@@ -250,17 +258,7 @@ def meg_info(files: list[BIDSFile]) -> str:
     first_file = files[0]
     metadata = first_file.get_metadata()
 
-    desc_data = {**device_info(metadata), **metadata}
-
-    return templates.meg_info(desc_data)
-
-
-def device_info(metadata: dict[str, Any]) -> dict[str, Any]:
-    """Extract device information from metadata."""
-    return {
-        "manufacturer": metadata.get("Manufacturer", "MANUFACTURER"),
-        "model_name": metadata.get("ManufacturersModelName", "MODEL"),
-    }
+    return templates.meg_info(metadata)
 
 
 def final_paragraph(metadata: dict[str, Any]) -> str:
@@ -306,11 +304,26 @@ def parse_files(
     # Group files into individual runs
     data_files = collect_associated_files(layout, data_files, extra_entities=["run"])
 
-    # print(data_files)
+    # Will only get institution from the first file.
+    # This assumes that ALL files from ALL datatypes
+    # were acquired in the same institution.
+    description_list = [institution_info(data_files[0])]
 
-    # description_list = [general_acquisition_info(data_files[0][0].get_metadata())]
-    description_list = []
+    # %% MRI
+    mri_datatypes = ["anat", "func", "fmap", "perf", "dwi"]
+    mri_scanner_info_done = False
     for group in data_files:
+
+        if group[0].entities["datatype"] not in mri_datatypes:
+            continue
+
+        # assume all MRI data was acquires on the same scanner
+        if not mri_scanner_info_done:
+            description_list.append(mri_scanner_info(group))
+            mri_scanner_info_done = True
+
+        group_description = ""
+
         if group[0].entities["datatype"] == "func":
             group_description = func_info(group, config, layout)
 
@@ -335,7 +348,17 @@ def parse_files(
         ] == "phasediff":
             group_description = fmap_info(layout, group, config)
 
-        elif group[0].entities["datatype"] in [
+        description_list.append(group_description)
+
+    # %% other
+    for group in data_files:
+
+        if group[0].entities["datatype"] in mri_datatypes:
+            continue
+
+        group_description = ""
+
+        if group[0].entities["datatype"] in [
             "eeg",
             "meg",
             "pet",
@@ -346,11 +369,9 @@ def parse_files(
             "microscopy",
         ]:
             LOGGER.warning(f" '{group[0].entities['datatype']}' not yet supported.")
-            group_description = ""
 
         else:
             LOGGER.warning(f" '{group[0].filename}' not yet supported.")
-            group_description = ""
 
         description_list.append(group_description)
 

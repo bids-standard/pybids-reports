@@ -16,7 +16,7 @@ from bids.ext.reports import parameters
         ("RM", "research mode (RM)"),
         ("SE", "spin echo (SE)"),
         ("SE_EP", "spin echo and echo planar (SE/EP)"),
-        ("spam egg", "UNKNOwN SEQUENCE"),
+        ("spam egg", "UNKNOWN SEQUENCE"),
     ],
 )
 def test_sequence(ScanningSequence, expected_seq, testconfig):
@@ -39,7 +39,7 @@ def test_sequence(ScanningSequence, expected_seq, testconfig):
         ("SS", "steady state"),
         ("TRSS", "time reversed steady state"),
         ("MP_SS", "MAG prepared and steady state"),
-        ("spam", "UNKNOwN SEQUENCE VARIANT"),
+        ("spam", "UNKNOWN SEQUENCE VARIANT"),
     ],
 )
 def test_variants(SequenceVariant, expected_var, testconfig):
@@ -92,34 +92,6 @@ def test_describe_func_duration_smoke():
     # then
     expected = "4:10"
     assert duration == expected
-
-
-def test_multiband_factor_smoke(testmeta, testmeta_light):
-    # when
-    multiband_factor = parameters.multiband_factor(testmeta)
-    # then
-    expected = "MB factor=2"
-    assert multiband_factor == expected
-
-    # when
-    multiband_factor = parameters.multiband_factor(testmeta_light)
-    # then
-    expected = ""
-    assert multiband_factor == expected
-
-
-def test_inplane_accel_smoke(testmeta, testmeta_light):
-    # when
-    multiband_factor = parameters.inplane_accel(testmeta)
-    # then
-    expected = "in-plane acceleration factor=2"
-    assert multiband_factor == expected
-
-    # when
-    multiband_factor = parameters.inplane_accel(testmeta_light)
-    # then
-    expected = ""
-    assert multiband_factor == expected
 
 
 @pytest.mark.parametrize(

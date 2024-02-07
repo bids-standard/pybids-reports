@@ -24,11 +24,13 @@ def render(template_name: str, data: dict[str, Any] | None = None) -> str:
         return tmp
 
 
-def highlight_missing_tags(foo: str) -> str:
+def highlight_missing_tags(foo: str, color="cyan") -> str:
     """Highlight missing tags in a rendered template."""
-    foo = f"[blue]{foo}[/blue]"
-    foo = foo.replace("{{", "[/blue][red]{{")
-    foo = foo.replace("}}", "}}[/red][blue]")
+    foo = f"[{color}]{foo}[/{color}]"
+    open_del = "{{"
+    foo = foo.replace("{{", f"[/{color}][red]{open_del}")
+    close_del = "}}"
+    foo = foo.replace("}}", f"{close_del}[/red][{color}]")
     return foo
 
 
@@ -38,6 +40,16 @@ def footer() -> str:
     from . import __version__
 
     return f"This section was (in part) generated automatically using pybids {__version__}."
+
+
+def mri_scanner_info(desc_data: dict[str, Any]) -> str:
+    """Generate mri scanner info report."""
+    return render(template_name="mri_scanner_info.mustache", data=desc_data)
+
+
+def institution_info(desc_data: dict[str, Any]) -> str:
+    """Generate institution report."""
+    return render(template_name="institution.mustache", data=desc_data)
 
 
 def anat_info(desc_data: dict[str, Any]) -> str:
