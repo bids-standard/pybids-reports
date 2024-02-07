@@ -62,7 +62,7 @@ def test_fmap_info_smoke(testlayout, testconfig):
         suffix="phasediff",
         extension=[".nii.gz"],
     )
-    desc = parsing.fmap_info(testlayout, fmap_files, testconfig)
+    desc = parsing.fmap_info(fmap_files, testconfig, testlayout)
     assert isinstance(desc, str)
 
 

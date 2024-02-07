@@ -71,6 +71,9 @@ def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: 
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
 
+    layout : :obj:`bids.layout.BIDSLayout`
+        Layout object for a BIDS dataset.
+
     Returns
     -------
     desc : :obj:`str`
@@ -131,6 +134,9 @@ def anat_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: 
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
 
+    layout : :obj:`bids.layout.BIDSLayout`
+        Layout object for a BIDS dataset.
+
     Returns
     -------
     desc : :obj:`str`
@@ -167,6 +173,9 @@ def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: B
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
 
+    layout : :obj:`bids.layout.BIDSLayout`
+        Layout object for a BIDS dataset.
+
     Returns
     -------
     desc : :obj:`str`
@@ -196,20 +205,21 @@ def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: B
     return templates.dwi_info(desc_data)
 
 
-def fmap_info(layout: BIDSLayout, files: list[BIDSFile], config: dict[str, dict[str, str]]) -> str:
+def fmap_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: BIDSLayout) -> str:
     """Generate a paragraph describing field map acquisition information.
 
     Parameters
     ----------
-    layout : :obj:`bids.layout.BIDSLayout`
-        Layout object for a BIDS dataset.
-
     files : :obj:`list` of :obj:`bids.layout.models.BIDSFile`
         List of nifti files in layout corresponding to field map scan.
 
     config : :obj:`dict`
         A dictionary with relevant information regarding sequences, sequence
         variants, phase encoding directions, and task names.
+
+    layout : :obj:`bids.layout.BIDSLayout`
+        Layout object for a BIDS dataset.
+
 
     Returns
     -------
@@ -236,6 +246,44 @@ def fmap_info(layout: BIDSLayout, files: list[BIDSFile], config: dict[str, dict[
     }
 
     return templates.fmap_info(desc_data)
+
+
+def perf_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: BIDSLayout) -> str:
+    first_file = files[0]
+    metadata = first_file.get_metadata()
+    img = try_load_nii(first_file.path)
+    if img is None:
+        files_not_found_warning(Path(first_file.path).relative_to(layout.root))
+
+    all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
+
+    desc_data = {
+        **common_mri_desc(img, metadata, config),
+        "echo_time": parameters.echo_time_ms(files),
+        "nb_runs": parameters.nb_runs(all_runs),
+    }
+
+    return templates.perf_info(desc_data)
+
+
+def pet_info(files: list[BIDSFile], layout: BIDSLayout) -> str:
+    first_file = files[0]
+    metadata = first_file.get_metadata()
+    img = try_load_nii(first_file.path)
+    if img is None:
+        files_not_found_warning(Path(first_file.path).relative_to(layout.root))
+
+    all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
+
+    desc_data = {
+        **metadata,
+        "fov": parameters.field_of_view(img),
+        "matrix_size": parameters.matrix_size(img),
+        "voxel_size": parameters.voxel_size(img),
+        "nb_runs": parameters.nb_runs(all_runs),
+    }
+
+    return templates.pet_info(desc_data)
 
 
 def meg_info(files: list[BIDSFile]) -> str:
@@ -343,10 +391,13 @@ def parse_files(
         elif group[0].entities["datatype"] == "dwi":
             group_description = dwi_info(group, config, layout)
 
+        elif group[0].entities["datatype"] == "perf":
+            group_description = perf_info(group, config, layout)
+
         elif (group[0].entities["datatype"] == "fmap") and group[0].entities[
             "suffix"
         ] == "phasediff":
-            group_description = fmap_info(layout, group, config)
+            group_description = fmap_info(group, config, layout)
 
         description_list.append(group_description)
 
@@ -358,15 +409,21 @@ def parse_files(
 
         group_description = ""
 
-        if group[0].entities["datatype"] in [
+        if group[0].entities["datatype"] == [
             "eeg",
             "meg",
-            "pet",
             "ieeg",
+        ]:
+            group_description = meg_info(group, config, layout)
+
+        if group[0].entities["datatype"] == "pet":
+            group_description = pet_info(group, layout)
+
+        if group[0].entities["datatype"] in [
             "beh",
-            "perf",
             "fnirs",
             "microscopy",
+            "motion",
         ]:
             LOGGER.warning(f" '{group[0].entities['datatype']}' not yet supported.")
 
