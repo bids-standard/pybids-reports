@@ -26,6 +26,12 @@ def institution_info(files: list[BIDSFile]):
         return ""
 
 
+def mri_scanner_info(files: list[BIDSFile]):
+    first_file = files[0]
+    metadata = first_file.get_metadata()
+    return templates.mri_scanner_info(metadata)
+
+
 def common_mri_desc(
     img: None | nib.Nifti1Image,
     metadata: dict[str, Any],
@@ -299,16 +305,19 @@ def parse_files(
     # Group files into individual runs
     data_files = collect_associated_files(layout, data_files, extra_entities=["run"])
 
-    # print(data_files)
-
     # Will only get institution from the first file.
     # This assumes that ALL files from ALL datatypes
     # were acquired in the same institution.
     description_list = [institution_info(data_files[0])]
 
-    print(description_list)
-
+    # %% MRI
+    mri_datatypes = ["anat", "func", "fmap", "perf", "dwi"]
+    mri_scanner_info_done = False
     for group in data_files:
+
+        if not mri_scanner_info_done and group[0].entities["datatype"] in mri_datatypes:
+            description_list.append(mri_scanner_info(group))
+            mri_scanner_info_done = True
 
         if group[0].entities["datatype"] == "func":
             group_description = func_info(group, config, layout)
@@ -334,7 +343,15 @@ def parse_files(
         ] == "phasediff":
             group_description = fmap_info(layout, group, config)
 
-        elif group[0].entities["datatype"] in [
+        description_list.append(group_description)
+
+    # %% other
+    for group in data_files:
+
+        if group[0].entities["datatype"] in mri_datatypes:
+            continue
+
+        if group[0].entities["datatype"] in [
             "eeg",
             "meg",
             "pet",
