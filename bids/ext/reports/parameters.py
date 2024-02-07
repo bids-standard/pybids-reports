@@ -303,7 +303,7 @@ def sequence(metadata: dict[str, Any], config: dict[str, dict[str, str]]) -> str
     if seq_abbrs[0] and seqs_as_str:
         seqs_as_str += f" ({'/'.join(seq_abbrs)})"
     else:
-        seqs_as_str = "UNKNOwN SEQUENCE"
+        seqs_as_str = "UNKNOWN SEQUENCE"
 
     return seqs_as_str
 
