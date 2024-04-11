@@ -2,25 +2,33 @@
 [![Documentation Status](https://readthedocs.org/projects/pybids-reports/badge/?version=latest)](https://pybids-reports.readthedocs.io/en/latest/?badge=latest)
 ![https://github.com/psf/black](https://img.shields.io/badge/code%20style-black-000000.svg)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/bids-standard/pybids-reports/main.svg)](https://results.pre-commit.ci/latest/github/bids-standard/pybids-reports/main)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/nilearn.svg)](https://pypi.org/project/nilearn/)
+
 
 # pybids-reports
 
-pybids-reports is a subpackage of pyBIDS, implementing automatic report
-generation from BIDS datasets.
+pybids-reports is a subpackage of pyBIDS,
+implementing automatic report generation from BIDS datasets.
 
 See the [BIDS paper](http://www.nature.com/articles/sdata201644) and
 http://bids.neuroimaging.io website for more information.
 
 NOTE: The reports module is experimental and currently under active development,
-and as such should be used with caution. Please remember to verify any generated
-report before putting it to use.
+and as such should be used with caution.
+Please remember to verify any generated report before putting it to use.
 
-Additionally, only MRI datatypes (func, anat, fmap, and dwi) are currently
-supported.
+Additionally, support for some dataypes (for example EEG or motion) may be limited or missing.
+
+## Install
+
+```bash
+pip install pybids-reports
+```
 
 ### Quickstart
 
-A simple example of standard usage follows. We assume that we have a root folder
+A simple example of standard usage follows.
+We assume that we have a root folder
 containing a BIDS-compliant project in `/bidsproject`.
 
 <!-- TODO
@@ -49,10 +57,9 @@ pub_description = descriptions.most_common()[0][0]
 
 ## License
 
-`pybids-reports` is licensed under the terms of the MIT license. See the file
-"LICENSE" for information on the history of this software, terms & conditions
-for usage, and a DISCLAIMER OF ALL WARRANTIES.
+`pybids-reports` is licensed under the terms of the MIT license.
+
+See the file "LICENSE" for information on the history of this software,
+terms & conditions for usage, and a DISCLAIMER OF ALL WARRANTIES.
 
 All trademarks referenced herein are property of their respective holders.
-
-Copyright (c) 2016--, PyBIDS developers, Planet Earth
