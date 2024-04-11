@@ -24,5 +24,5 @@ build: ## builds source and wheel package
 	python -m build
 	twine check dist/*
 
-release: build ## package and upload a release
+release: ## package and upload a release
 	twine upload dist/*
