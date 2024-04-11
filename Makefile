@@ -18,3 +18,11 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/build/html/index.html
+
+build: ## builds source and wheel package
+	rm -fr dist
+	python -m build
+	twine check dist/*
+
+release: build ## package and upload a release
+	twine upload dist/*

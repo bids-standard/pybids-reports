@@ -2,8 +2,8 @@
 requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
-[tool.hatch.version]
-source = "vcs"
+# [tool.hatch.version]
+# source = "vcs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["bids"]
@@ -41,7 +41,8 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Topic :: Scientific/Engineering",
 ]
-dynamic = ["version"]
+# dynamic = ["version"]
+version = "0.1.0"
 
 [project.scripts]
 pybids_reports = "bids.ext.reports.cli:cli"
