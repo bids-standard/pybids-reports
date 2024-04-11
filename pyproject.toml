@@ -2,8 +2,8 @@
 requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
-# [tool.hatch.version]
-# source = "vcs"
+[tool.hatch.version]
+source = "vcs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["bids"]
@@ -11,8 +11,8 @@ only-include = ["bids/ext/reports"]
 # recursive-include bids/ext/reports/config *.json
 # recursive-include bids/ext/reports/tests/data *
 
-# [tool.hatch.build.hooks.vcs]
-# version-file = "bids/ext/reports/_version.py"
+[tool.hatch.build.hooks.vcs]
+version-file = "bids/ext/reports/_version.py"
 
 [project]
 name = "pybids_reports"
@@ -40,8 +40,8 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Topic :: Scientific/Engineering",
 ]
-# dynamic = ["version"]
-version = "0.1.0"
+dynamic = ["version"]
+# version = "0.1.0"
 
 [project.scripts]
 pybids_reports = "bids.ext.reports.cli:cli"

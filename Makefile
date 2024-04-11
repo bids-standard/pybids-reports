@@ -20,6 +20,7 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	$(BROWSER) docs/build/html/index.html
 
 build: ## builds source and wheel package
+	pip install --upgrade build twine
 	rm -fr dist
 	python -m build
 	twine check dist/*
