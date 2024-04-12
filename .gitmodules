@@ -1,3 +1,7 @@
 [submodule "bids/ext/reports/templates"]
 	path = bids/ext/reports/templates
 	url = https://github.com/bids-standard/bids-methods.git
+[submodule "tools/bids-examples"]
+	path = tools/bids-examples
+	url = https://github.com/bids-standard/bids-examples
+	datalad-url = https://github.com/bids-standard/bids-examples

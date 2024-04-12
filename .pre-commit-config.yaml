@@ -26,6 +26,13 @@ repos:
   - id: yamlfmt
     args: [--mapping, '2', --sequence, '2', --offset, '0']
 
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.13.0
+  hooks:
+  - id: pretty-format-toml
+    args: [--autofix, --indent, '4']
+
+
 - repo: https://github.com/asottile/pyupgrade
   rev: v3.15.2
   hooks:
