@@ -46,13 +46,13 @@ repos:
     args: [--profile, black, --settings-path, pyproject.toml]
 
 - repo: https://github.com/psf/black
-  rev: 24.4.2
+  rev: 24.8.0
   hooks:
   - id: black
     args: [--config=pyproject.toml, --verbose]
 
 - repo: https://github.com/pycqa/flake8
-  rev: 7.1.0
+  rev: 7.1.1
   hooks:
   - id: flake8
     args: [--config=.flake8]
