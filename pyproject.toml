@@ -28,7 +28,7 @@ license = {file = "LICENSE"}
 maintainers = [{name = "PyBIDS Developers", email = "bids-discussion@googlegroups.com"}]
 name = "pybids_reports"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 [project.optional-dependencies]
 ci_tests = [
@@ -87,7 +87,7 @@ exclude = '''
 '''
 include = '\.pyi?$'
 line-length = 99
-target-version = ['py38']
+target-version = ['py39']
 
 [tool.codespell]
 ignore-words-list = "te"
