@@ -22,7 +22,7 @@ def testdataset(data_path):
     return data_dir
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def testlayout(testdataset):
     """A BIDSLayout for testing."""
     return BIDSLayout(testdataset)
