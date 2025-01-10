@@ -36,7 +36,7 @@ jobs:
     - name: Install pybids-reports
       run: pip install tox
     - name: Run tests
-      run: tox
+      run: tox run -e test -- tests
     - name: Upload coverage to CodeCov
       uses: codecov/codecov-action@v5
       if: success()
