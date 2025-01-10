@@ -2,7 +2,7 @@
 
 rc=0;
 for pre in  asl ds00 eeg meg ieeg pet; do
-    for i in $(find bids-examples -maxdepth 1 -type d -name "${pre}*"); do
+    for i in $(find tools/bids-examples -maxdepth 1 -type d -name "${pre}*"); do
         if [ "$i" == "bids-examples" ]; then
             continue
         fi

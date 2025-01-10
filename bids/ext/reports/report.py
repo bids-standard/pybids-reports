@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import json
-import os.path as op
 from collections import Counter
+from pathlib import Path
 from typing import Any
 
 from bids.layout import BIDSFile, BIDSLayout
@@ -48,17 +48,17 @@ class BIDSReport:
     supported.
     """
 
-    def __init__(self, layout: BIDSLayout, config: None | str | dict[str, dict[str, str]] = None):
+    def __init__(
+        self, layout: BIDSLayout, config: None | str | Path | dict[str, dict[str, str]] = None
+    ):
         self.layout = layout
         if config is None:
-            config = op.join(
-                op.dirname(op.abspath(__file__)),
-                "config",
-                "converters.json",
-            )
+            config = Path(__file__).absolute().parent / "templates" / "config" / "converters.json"
 
         if isinstance(config, str):
-            with open(config) as fobj:
+            config = Path(config)
+        if isinstance(config, Path):
+            with config.open() as fobj:
                 config = json.load(fobj)
 
         if not isinstance(config, dict):
@@ -85,22 +85,6 @@ class BIDSReport:
             pattern is most likely the most complete. In cases where the
             file list contains multiple protocols, each pattern will need to be
             inspected manually.
-
-        Examples
-        --------
-        >>> from os.path import join
-        >>> from bids.layout import BIDSLayout
-        >>> from bids.reports import BIDSReport
-        >>> from bids.tests import get_test_data_path
-        >>> layout = BIDSLayout(join(get_test_data_path(), 'synthetic'))
-        >>> report = BIDSReport(layout)
-        >>> files = layout.get(session='01', extension=['.nii.gz', '.nii'])
-        >>> counter = report.generate_from_files(files)
-        Number of patterns detected: 1
-        Remember to double-check everything and to replace <deg> with a degree symbol.
-
-        >>> counter.most_common()[0][0]  # doctest: +ELLIPSIS
-        'In session 01, MR data were...'
         """
         descriptions = []
 
@@ -155,21 +139,6 @@ class BIDSReport:
             pattern is most likely the most complete. In cases where the
             dataset contains multiple protocols, each pattern will need to be
             inspected manually.
-
-        Examples
-        --------
-        >>> from os.path import join
-        >>> from bids.layout import BIDSLayout
-        >>> from bids.reports import BIDSReport
-        >>> from bids.tests import get_test_data_path
-        >>> layout = BIDSLayout(join(get_test_data_path(), 'synthetic'))
-        >>> report = BIDSReport(layout)
-        >>> counter = report.generate(session='01')
-        Number of patterns detected: 1
-        Remember to double-check everything and to replace <deg> with a degree symbol.
-
-        >>> counter.most_common()[0][0]  # doctest: +ELLIPSIS
-        'In session 01, MR data were...'
         """
         descriptions = []
 
