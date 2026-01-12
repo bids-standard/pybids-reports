@@ -27,7 +27,7 @@ repos:
     args: [--mapping, '2', --sequence, '2', --offset, '0']
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.15.0
+  rev: v2.16.0
   hooks:
   - id: pretty-format-toml
     args: [--autofix, --indent, '4']
