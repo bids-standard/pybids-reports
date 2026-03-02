@@ -2,6 +2,33 @@
 build-backend = "hatchling.build"
 requires = ["hatchling", "hatch-vcs"]
 
+[dependency-groups]
+dev = [
+    {include-group = "test"},
+    {include-group = "doc"},
+    "tox",
+    "tox-uv",
+    "pre-commit"
+]
+doc = [
+    "furo",
+    "myst-parser",
+    "nbsphinx",
+    "numpydoc",
+    "sphinx",
+    "sphinx-argparse",
+    "sphinx-copybutton",
+    "sphinx_gallery"
+]
+docs = [{include-group = "doc"}]
+test = [
+    "codecov",
+    "pytest>=6.0",
+    "pytest-cov",
+    "pytest-xdist"
+]
+tests = [{include-group = "test"}]
+
 [project]
 authors = [{name = "PyBIDS Developers", email = "bids-discussion@googlegroups.com"}]
 classifiers = [
@@ -29,36 +56,6 @@ maintainers = [{name = "PyBIDS Developers", email = "bids-discussion@googlegroup
 name = "pybids_reports"
 readme = "README.md"
 requires-python = ">=3.10"
-
-[project.optional-dependencies]
-ci_tests = [
-    "pybids_reports[test]",
-    "pytest-xdist"
-]
-dev = [
-    "pybids_reports[doc]",
-    "pybids_reports[test]"
-]
-doc = [
-    "furo",
-    "myst-parser",
-    "nbsphinx",
-    "numpydoc",
-    "sphinx",
-    "sphinx-argparse",
-    "sphinx-copybutton",
-    "sphinx_gallery"
-]
-docs = ["pybids_reports[doc]"]
-test = [
-    "codecov",
-    "flake8-black",
-    "flake8-docstrings",
-    "flake8-isort",
-    "pytest>=6.0",
-    "pytest-cov"
-]
-tests = ["pybids_reports[test]"]
 
 [project.scripts]
 pybids_reports = "bids.ext.reports.cli:cli"
@@ -100,15 +97,15 @@ check_untyped_defs = true
 disallow_any_generics = true
 disallow_incomplete_defs = true
 disallow_untyped_defs = true
-exclude = ['bids/ext/reports/tests/']
+enable_error_code = ["ignore-without-code", "redundant-expr", "truthy-bool"]
 no_implicit_optional = true
 warn_redundant_casts = true
+warn_unreachable = true
 warn_unused_ignores = true
 
 [[tool.mypy.overrides]]
 ignore_errors = true
 module = [
-    'bids.ext.reports.tests.*',
     'bids.ext.reports._version.*',
     'bids.ext.reports.due.*'
 ]

@@ -1,6 +1,11 @@
 ---
-repos:
+ci:
+  autoupdate_commit_msg: 'chore(deps): update pre-commit hooks'
+  autofix_commit_msg: 'style: pre-commit fixes'
+  autoupdate_schedule: monthly
 
+
+repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v6.0.0
   hooks:
@@ -14,6 +19,14 @@ repos:
   - id: mixed-line-ending
     args: [--fix=lf]
   - id: trailing-whitespace
+
+    # Checks for .rst files
+- repo: https://github.com/pre-commit/pygrep-hooks
+  rev: v1.10.0
+  hooks:
+  - id: rst-backticks
+  - id: rst-directive-colons
+  - id: rst-inline-touching-normal
 
 - repo: https://github.com/codespell-project/codespell
   rev: v2.4.1
