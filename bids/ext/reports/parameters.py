@@ -29,7 +29,7 @@ def nb_runs(run_list: list[str]) -> str:
 def slice_order(metadata: dict[str, Any]) -> str:
     """Generate description of slice timing from metadata."""
     if "SliceTiming" in metadata:
-        return f' in {get_slice_info(metadata["SliceTiming"])} order'
+        return f" in {get_slice_info(metadata['SliceTiming'])} order"
     else:
         return ""
 
@@ -102,7 +102,7 @@ def echo_time_ms(files: list[BIDSFile]) -> str:
         Description of echo times.
     """
     echo_times = [f.get_metadata().get("EchoTime", None) for f in files]
-    echo_times = sorted(list(set(echo_times)))
+    echo_times = sorted(set(echo_times))
     if echo_times == [None]:
         return "UNKNOWN"
     if len(echo_times) <= 1:
@@ -125,7 +125,7 @@ def multi_echo(files: list[BIDSFile]) -> str:
         Whether the data are multi-echo or single-echo.
     """
     echo_times = [f.get_metadata().get("EchoTime", None) for f in files]
-    echo_times = sorted(list(set(echo_times)))
+    echo_times = sorted(set(echo_times))
     if echo_times == [None]:
         return ""
     multi_echo = "multi-echo" if len(echo_times) > 1 else "single-echo"
@@ -133,7 +133,7 @@ def multi_echo(files: list[BIDSFile]) -> str:
 
 
 def echo_times_fmap(files: list[BIDSFile]) -> tuple[float, float]:
-    """Generate description of echo times from metadata field for fmaps
+    """Generate description of echo times from metadata field for fmaps.
 
     Parameters
     ----------
@@ -149,8 +149,8 @@ def echo_times_fmap(files: list[BIDSFile]) -> tuple[float, float]:
 
     echo_times1 = [f.get_metadata()["EchoTime1"] for f in files]
     echo_times2 = [f.get_metadata()["EchoTime2"] for f in files]
-    echo_times1 = sorted(list(set(echo_times1)))
-    echo_times2 = sorted(list(set(echo_times2)))
+    echo_times1 = sorted(set(echo_times1))
+    echo_times2 = sorted(set(echo_times2))
     if len(echo_times1) <= 1 and len(echo_times2) <= 1:
         # if that's not the case we should probably throw a warning
         # because we should expect the same echo times for all values
@@ -166,7 +166,7 @@ def bvals(bval_file: str | Path) -> str:
         raw_bvals = file_object.read().splitlines()
     # Flatten list of space-separated values
     bvals = [item for sublist in [line.split(" ") for line in raw_bvals] for item in sublist]
-    bvals_as_int = sorted([int(v) for v in set(bvals) if v not in [""]])
+    bvals_as_int = sorted([int(v) for v in set(bvals) if v != ""])
     bvals_as_list = [num_to_str(v) for v in bvals_as_int]
     return list_to_str(bvals_as_list)
 
@@ -183,7 +183,7 @@ def intendedfor_targets(metadata: dict[str, Any], layout: BIDSLayout) -> str:
     for scan in scans:
         fn = Path(scan).name
 
-        if_file = [f for f in layout.get(extension=[".nii", ".nii.gz"]) if fn in f.path][0]
+        if_file = next(f for f in layout.get(extension=[".nii", ".nii.gz"]) if fn in f.path)
 
         target_type = if_file.entities["suffix"].upper()
         if target_type == "BOLD":

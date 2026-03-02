@@ -88,8 +88,8 @@ class BIDSReport:
         """
         descriptions = []
 
-        subjects = sorted(list({f.get_entities().get("subject") for f in files}))
-        sessions = sorted(list({f.get_entities().get("session") for f in files}))
+        subjects = sorted({f.get_entities().get("subject") for f in files})
+        sessions = sorted({f.get_entities().get("session") for f in files})
         for sub in subjects:
             subject_files = [f for f in files if f.get_entities().get("subject") == sub]
             description_list = []

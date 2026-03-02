@@ -68,27 +68,6 @@ pybids_reports = "bids.ext.reports.cli:cli"
 Documentation = "https://pybids-reports.readthedocs.io/en/latest/"
 Homepage = "http://github.com/bids-standard/pybids-reports"
 
-[tool.black]
-exclude = '''
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.github
-    | \.hg
-    | \.pytest_cache
-    | _build
-    | build
-    | dist
-  )/
-  | bids/ext/reports/_version.py
-  | bids/ext/reports/due.py
-)
-'''
-include = '\.pyi?$'
-line-length = 99
-target-version = ['py39']
-
 [tool.codespell]
 ignore-words-list = "te"
 skip = "./.git,tests/data/*"
@@ -116,12 +95,6 @@ packages = ["bids"]
 [tool.hatch.version]
 source = "vcs"
 
-[tool.isort]
-combine_as_imports = true
-line_length = 99
-profile = "black"
-skip_gitignore = true
-
 [tool.mypy]
 check_untyped_defs = true
 disallow_any_generics = true
@@ -143,7 +116,111 @@ module = [
 [tool.pytest.ini_options]
 addopts = "-ra --strict-config --strict-markers --showlocals -s -vv --durations=0"
 doctest_optionflags = "NORMALIZE_WHITESPACE ELLIPSIS"
+filterwarnings = ["error"]
 junit_family = "xunit2"
+log_level = "INFO"
 minversion = "6.0"
 norecursedirs = "bids/ext/reports/templates"
+testpaths = ["tests"]
 xfail_strict = true
+
+[tool.ruff]
+extend-exclude = ["bids/ext/reports/_version.py"]
+include = [
+    "pyproject.toml",
+    "bids",
+    "tools",
+    "doc"
+]
+indent-width = 4
+line-length = 99
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+indent-style = "space"
+line-ending = "auto"
+quote-style = "double"
+skip-magic-trailing-comma = false
+
+[tool.ruff.lint]
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+fixable = ["ALL"]
+ignore = [
+    "ARG002",
+    "ERA001",
+    "D100",
+    "D101",
+    "D103",
+    "D105",
+    "D205",
+    "N803",
+    "N806",
+    "PERF401",
+    "PLR2004",
+    "PTH100",
+    "PTH113",
+    "PTH118",
+    "PTH123",
+    "PTH120",
+    "PTH208",
+    # Avoid linter rules conflicting with the formatter
+    # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+    "COM812",
+    "COM819",
+    "E111",
+    "E114",
+    "E117",
+    "Q000",
+    "Q001",
+    "Q002",
+    "Q003",
+    "W191"
+]
+# List of all the ruff rules (includes why the rule matters)
+# https://docs.astral.sh/ruff/rules/
+select = [
+    "ARG",
+    "B",
+    "C4",
+    "C90",
+    "D",
+    "E",
+    "ERA",
+    "F",
+    "FLY",
+    "FURB",
+    "I",
+    "N",
+    "NPY",
+    "PERF",
+    "PIE",
+    "PTH",
+    "PD",
+    "PGH",
+    "PLR",
+    "RUF",
+    "SIM",
+    "UP",
+    "W"
+]
+unfixable = []
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["D104", "E402"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.pylint]
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-args
+max-args = 15
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-branches
+max-branches = 15
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-returns
+max-returns = 6
+# https://docs.astral.sh/ruff/settings/#lint_pylint_max-statements
+max-statements = 100
