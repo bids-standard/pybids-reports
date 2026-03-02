@@ -193,7 +193,7 @@ def intendedfor_targets(metadata: dict[str, Any], layout: BIDSLayout) -> str:
         else:
             target_type_str = f"{target_type} scan"
 
-        run_num = int(if_file.run)
+        run_num = int(if_file.entities["run"])
         if target_type_str in tmp_dict:
             tmp_dict[target_type_str].append(run_num)
         else:
