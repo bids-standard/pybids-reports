@@ -8,10 +8,10 @@ from pathlib import Path
 from typing import IO
 
 import rich
+from bids.ext.reports._version import __version__
 from bids.layout import BIDSLayout
 
 from bids.ext.reports import BIDSReport
-from bids.ext.reports._version import __version__
 from bids.ext.reports.logger import pybids_reports_logger
 
 # from bids.reports import BIDSReport
