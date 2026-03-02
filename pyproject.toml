@@ -28,7 +28,7 @@ license = {file = "LICENSE"}
 maintainers = [{name = "PyBIDS Developers", email = "bids-discussion@googlegroups.com"}]
 name = "pybids_reports"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [project.optional-dependencies]
 ci_tests = [
@@ -55,7 +55,7 @@ test = [
     "flake8-black",
     "flake8-docstrings",
     "flake8-isort",
-    "pytest>=3.3",
+    "pytest>=6.0",
     "pytest-cov"
 ]
 tests = ["pybids_reports[test]"]
