@@ -16,7 +16,7 @@ LOGGER = pybids_reports_logger()
 
 
 def collect_associated_files(
-    layout: BIDSLayout, files: list[BIDSFile], extra_entities: list[str] = []
+    layout: BIDSLayout, files: list[BIDSFile], extra_entities: list[str] | None = None
 ) -> list[BIDSFile]:
     """Collect and group BIDSFiles with multiple files per acquisition.
 
@@ -34,6 +34,8 @@ def collect_associated_files(
     -------
     collected_files : :obj:`list` of :obj:`list` of :obj:`bids.layout.BIDSFile`
     """
+    if extra_entities is None:
+        extra_entities = []
     MULTICONTRAST_ENTITIES = ["echo", "part", "ch", "direction"]
     MULTICONTRAST_SUFFIXES = [
         ("bold", "phase"),

@@ -99,7 +99,7 @@ def func_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: 
 
     task_name = first_file.get_entities()["task"]
 
-    all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
+    all_runs = sorted({f.get_entities().get("run", 1) for f in files})
 
     nb_vols = "UNKNOWN"
     duration = "UNKNOWN"
@@ -148,7 +148,7 @@ def anat_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: 
     if img is None:
         files_not_found_warning(Path(first_file.path).relative_to(layout.root))
 
-    all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
+    all_runs = sorted({f.get_entities().get("run", 1) for f in files})
 
     desc_data = {
         **common_mri_desc(img, metadata, config),
@@ -188,7 +188,7 @@ def dwi_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: B
         files_not_found_warning(Path(first_file.path).relative_to(layout.root))
     bval_file = first_file.path.replace(".nii.gz", ".bval").replace(".nii", ".bval")
 
-    all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
+    all_runs = sorted({f.get_entities().get("run", 1) for f in files})
 
     dmri_dir = "UNKNOWN"
     if img is not None:
@@ -255,7 +255,7 @@ def perf_info(files: list[BIDSFile], config: dict[str, dict[str, str]], layout: 
     if img is None:
         files_not_found_warning(Path(first_file.path).relative_to(layout.root))
 
-    all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
+    all_runs = sorted({f.get_entities().get("run", 1) for f in files})
 
     desc_data = {
         **common_mri_desc(img, metadata, config),
@@ -273,7 +273,7 @@ def pet_info(files: list[BIDSFile], layout: BIDSLayout) -> str:
     if img is None:
         files_not_found_warning(Path(first_file.path).relative_to(layout.root))
 
-    all_runs = sorted(list({f.get_entities().get("run", 1) for f in files}))
+    all_runs = sorted({f.get_entities().get("run", 1) for f in files})
 
     desc_data = {
         **metadata,
@@ -361,7 +361,6 @@ def parse_files(
     mri_datatypes = ["anat", "func", "fmap", "perf", "dwi"]
     mri_scanner_info_done = False
     for group in data_files:
-
         if group[0].entities["datatype"] not in mri_datatypes:
             continue
 
@@ -403,7 +402,6 @@ def parse_files(
 
     # %% other
     for group in data_files:
-
         if group[0].entities["datatype"] in mri_datatypes:
             continue
 

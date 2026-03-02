@@ -20,7 +20,7 @@ from bids.ext.reports import parameters
     ],
 )
 def test_sequence(ScanningSequence, expected_seq, testconfig):
-    """test for sequence and variant type description"""
+    """Test for sequence and variant type description."""
     metadata = {
         "ScanningSequence": ScanningSequence,
     }
@@ -43,7 +43,7 @@ def test_sequence(ScanningSequence, expected_seq, testconfig):
     ],
 )
 def test_variants(SequenceVariant, expected_var, testconfig):
-    """test for sequence and variant type description"""
+    """Test for sequence and variant type description."""
     metadata = {
         "SequenceVariant": SequenceVariant,
     }
@@ -52,7 +52,7 @@ def test_variants(SequenceVariant, expected_var, testconfig):
 
 
 def test_bvals_smoke(testlayout):
-    """Smoke test for parsing _dwi.bval
+    """Smoke test for parsing _dwi.bval.
 
     It should return a str description when provided valid inputs.
     """
@@ -68,7 +68,7 @@ def test_bvals_smoke(testlayout):
 
 
 def test_echo_times_fmap(testlayout):
-    """Smoke test for parsing echo time
+    """Smoke test for parsing echo time.
 
     It should return a str description when provided valid inputs.
     """

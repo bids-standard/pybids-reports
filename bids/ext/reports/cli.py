@@ -3,8 +3,9 @@
 from __future__ import annotations
 
 import argparse
+from collections.abc import Sequence
 from pathlib import Path
-from typing import IO, Sequence
+from typing import IO
 
 import rich
 from bids.layout import BIDSLayout
@@ -102,7 +103,7 @@ def set_verbosity(verbosity: int | list[int]) -> None:
         LOGGER.setLevel("DEBUG")
 
 
-def cli(args: Sequence[str] = None, namespace=None) -> None:
+def cli(args: Sequence[str] | None = None, namespace=None) -> None:
     """Entry point."""
     parser = base_parser()
     opts = parser.parse_args(args, namespace)

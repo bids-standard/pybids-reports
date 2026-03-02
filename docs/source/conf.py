@@ -17,9 +17,9 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.pardir))
 sys.path.insert(0, os.path.abspath("sphinxext"))
 
-from github_link import make_linkcode_resolve  # noqa
+from github_link import make_linkcode_resolve
 
-import bids.ext.reports  # noqa
+import bids.ext.reports
 
 __version__ = bids.ext.reports.__version__
 
