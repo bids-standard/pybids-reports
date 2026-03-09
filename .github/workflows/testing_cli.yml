@@ -23,24 +23,22 @@ jobs:
         python-version: ['3.14']
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} with Python ${{ matrix.python-version }}
-    defaults:
-      run:
-        shell: bash
     steps:
     - uses: actions/checkout@v6
       with:
-        submodules: recursive
-    - name: Set up python
+        submodules: recursiv
+    - name: Install the latest version of uv
+      uses: astral-sh/setup-uv@v7
+    - name: Setup python
       uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Display Python version
-      run: python -c "import sys; print(sys.version)"
-    - name: Install pybids-reports
-      run: pip install .
-    - name: Info CLI
+        allow-prereleases: true
+    - name: Install tox
+      run: uv tool install tox --with=tox-uv --with=tox-gh-actions
+    - name: Show tox config
+      run: tox c
+    - name: Run test suite
+      shell: bash -el {0}
       run: |
-        pybids_reports --version
-        pybids_reports --help
-    - name: Run test for CLI
-      run: bash tools/run_on_examples.sh
+        tox run --list-dependencies -e test_cli
