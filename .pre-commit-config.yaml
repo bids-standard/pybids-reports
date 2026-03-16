@@ -25,6 +25,10 @@ repos:
   rev: v1.10.0
   hooks:
   - id: rst-backticks
+    exclude: |
+      (?x)^(
+          docs/source/index.rst
+      )$
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
 
