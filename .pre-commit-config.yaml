@@ -16,8 +16,7 @@ repos:
   - id: check-yaml
   - id: end-of-file-fixer
   - id: mixed-line-ending
-    args:
-    - --fix=lf
+    args: [--fix=lf]
   - id: trailing-whitespace
 
     # Checks for .rst files
@@ -25,58 +24,46 @@ repos:
   rev: v1.10.0
   hooks:
   - id: rst-backticks
+    exclude: |
+      (?x)^(
+          docs/source/index.rst
+      )$
   - id: rst-directive-colons
   - id: rst-inline-touching-normal
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.4.2
+  rev: v2.4.1
   hooks:
   - id: codespell
-    args:
-    - --toml=pyproject.toml
-    additional_dependencies:
-    - tomli
+    args: [--toml=pyproject.toml]
+    additional_dependencies: [tomli]
+
 - repo: https://github.com/jumanjihouse/pre-commit-hook-yamlfmt
   rev: 0.2.3
   hooks:
   - id: yamlfmt
-    args:
-    - --mapping
-    - '2'
-    - --sequence
-    - '2'
-    - --offset
-    - '0'
+    args: [--mapping, '2', --sequence, '2', --offset, '0']
+
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
   rev: v2.16.0
   hooks:
   - id: pretty-format-toml
-    args:
-    - --autofix
-    - --indent
-    - '4'
+    args: [--autofix, --indent, '4']
+
+    # Lint and format Python code
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.15.5
+  rev: v0.15.1
   hooks:
   - id: ruff-check
-    args:
-    - --fix
-    - --show-fixes
-    - --unsafe-fixes
+        # args: [--statistics]
+    args: [--fix, --show-fixes, --unsafe-fixes]
   - id: ruff-format
+        # args: [--diff]
+
 - repo: https://github.com/pre-commit/mirrors-mypy
   rev: v1.19.1
   hooks:
   - id: mypy
     files: nilearn
-    additional_dependencies:
-    - numpy
-    - nibabel
-    args:
-    - --config-file
-    - pyproject.toml
-    - --pretty
-ci:
-  autoupdate_commit_msg: 'chore: update pre-commit hooks'
-  autoupdate_schedule: monthly
-  autofix_commit_msg: 'style: pre-commit fixes'
+    additional_dependencies: [numpy, nibabel]
+    args: [--config-file, pyproject.toml, --pretty]
