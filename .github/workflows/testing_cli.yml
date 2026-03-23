@@ -23,9 +23,6 @@ jobs:
         python-version: ['3.14']
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} with Python ${{ matrix.python-version }}
-    defaults:
-      run:
-        shell: bash
     steps:
     - uses: actions/checkout@v6
       with:
@@ -34,13 +31,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Display Python version
-      run: python -c "import sys; print(sys.version)"
     - name: Install pybids-reports
-      run: pip install .
-    - name: Info CLI
-      run: |
-        pybids_reports --version
-        pybids_reports --help
+      run: pip install tox
     - name: Run test for CLI
-      run: bash tools/run_on_examples.sh
+      run: tox run --list-dependencies -e test_cli
