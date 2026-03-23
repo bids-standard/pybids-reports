@@ -25,7 +25,8 @@ test = [
     "codecov",
     "pytest>=6.0",
     "pytest-cov",
-    "pytest-xdist"
+    "pytest-xdist",
+    "pytest-randomly>=4.0.0"
 ]
 tests = [{include-group = "test"}]
 
