@@ -33,12 +33,7 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
-        allow-prereleases: true
-    - name: Install tox
-      run: uv tool install tox --with=tox-uv --with=tox-gh-actions
-    - name: Show tox config
-      run: tox c
-    - name: Run test suite
-      shell: bash -el {0}
-      run: |
-        tox run --list-dependencies -e test_cli
+    - name: Install pybids-reports
+      run: pip install tox
+    - name: Run test for CLI
+      run: tox run --list-dependencies -e test_cli
