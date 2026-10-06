@@ -32,7 +32,7 @@ def mri_scanner_info(files: list[BIDSFile]):
 
 
 def common_mri_desc(
-    img: None | nib.Nifti1Image,
+    img: nib.Nifti1Image | None,
     metadata: dict[str, Any],
     config: dict[str, dict[str, str]],
 ) -> dict[str, Any]:
@@ -433,7 +433,7 @@ def parse_files(
     return description_list
 
 
-def try_load_nii(file: BIDSFile) -> None | nib.Nifti1Image:
+def try_load_nii(file: BIDSFile) -> nib.Nifti1Image | None:
     """Try to load a nifti file, return None if it fails."""
     try:
         img = nib.load(file)

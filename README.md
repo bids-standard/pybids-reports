@@ -42,7 +42,7 @@ from bids.layout import BIDSLayout
 from bids.reports import BIDSReport
 
 # Load the BIDS dataset
-layout = BIDSLayout('/bidsproject')
+layout = BIDSLayout("/bidsproject")
 
 # Initialize a report for the dataset
 report = BIDSReport(layout)

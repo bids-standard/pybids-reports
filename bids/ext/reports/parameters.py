@@ -308,7 +308,7 @@ def sequence(metadata: dict[str, Any], config: dict[str, dict[str, str]]) -> str
     return seqs_as_str
 
 
-def matrix_size(img: None | Nifti1Image) -> str:
+def matrix_size(img: Nifti1Image | None) -> str:
     """Extract and reformat voxel size, matrix size, FOV, and number of slices into strings.
 
     Parameters
@@ -327,7 +327,7 @@ def matrix_size(img: None | Nifti1Image) -> str:
     return f"{n_x}x{n_y}"
 
 
-def voxel_size(img: None | Nifti1Image) -> str:
+def voxel_size(img: Nifti1Image | None) -> str:
     """Extract and reformat voxel size.
 
     Parameters
@@ -346,7 +346,7 @@ def voxel_size(img: None | Nifti1Image) -> str:
     return "x".join([num_to_str(s) for s in voxel_dims])
 
 
-def field_of_view(img: None | Nifti1Image) -> str:
+def field_of_view(img: Nifti1Image | None) -> str:
     """Extract and reformat FOV.
 
     Parameters

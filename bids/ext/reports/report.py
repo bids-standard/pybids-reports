@@ -49,7 +49,7 @@ class BIDSReport:
     """
 
     def __init__(
-        self, layout: BIDSLayout, config: None | str | Path | dict[str, dict[str, str]] = None
+        self, layout: BIDSLayout, config: str | Path | dict[str, dict[str, str]] | None = None
     ):
         self.layout = layout
         if config is None:
